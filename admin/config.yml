@@ -1,0 +1,66 @@
+backend:
+  name: git-gateway
+  branch: main
+
+media_folder: "images"
+public_folder: "/images"
+
+locale: "zh_Hant"
+
+site_url: https://mujin.tw
+display_url: https://mujin.tw
+logo_url: https://mujin.tw/images/mujin-studio-yilan-interior-design-logo.webp
+
+collections:
+  - name: "portfolio"
+    label: "精選案例"
+    label_singular: "案例"
+    folder: "content/portfolio"
+    create: true
+    slug: "{{slug}}"
+    extension: "json"
+    format: "json"
+    identifier_field: "title"
+    summary: "{{title}} — {{location}} · {{type}}"
+    sortable_fields: ['order', 'title', 'year']
+    view_groups:
+      - label: 分類
+        field: category
+      - label: 是否上架
+        field: published
+    fields:
+      - { label: "網址代碼 (slug)", name: "slug", widget: "string", hint: "英文小寫與連字號，例如 dongshan-hidden-luxury。會變成網址一部分，建立後不要隨便改。" }
+      - { label: "案例名稱", name: "title", widget: "string", hint: "例：冬山 • 隱奢藝邸" }
+      - label: "分類"
+        name: "category"
+        widget: "select"
+        options:
+          - { label: "住宅 Residential", value: "Residential" }
+          - { label: "商業 Commercial", value: "Commercial" }
+      - { label: "地區", name: "location", widget: "string", hint: "例：冬山 / 羅東 / 礁溪" }
+      - { label: "年份", name: "year", widget: "string", required: false }
+      - { label: "坪數", name: "area", widget: "string", required: false, hint: "例：45 坪" }
+      - label: "案型"
+        name: "type"
+        widget: "select"
+        required: false
+        options:
+          - "舊屋翻新"
+          - "新屋裝修"
+          - "預售屋客變"
+          - "農舍規劃設計"
+          - "鋼構屋規劃"
+          - "商業空間設計"
+      - { label: "封面圖片", name: "cover", widget: "image", hint: "首頁與列表頁用的代表圖。建議寬度 1200px 以上。" }
+      - { label: "封面圖片描述 (alt)", name: "coverAlt", widget: "string", hint: "給搜尋引擎看的文字描述，例：冬山黑色大理石電視牆設計" }
+      - { label: "簡述", name: "summary", widget: "text", hint: "1-2 句話，會顯示在列表頁。" }
+      - label: "內頁相簿"
+        name: "gallery"
+        widget: "list"
+        summary: "{{fields.alt}}"
+        fields:
+          - { label: "圖片", name: "src", widget: "image" }
+          - { label: "圖片描述 (alt)", name: "alt", widget: "string" }
+      - { label: "設計筆記", name: "body", widget: "text", hint: "一段文字，介紹設計概念。可斷行。" }
+      - { label: "排序", name: "order", widget: "number", default: 100, hint: "數字越小越前面。" }
+      - { label: "是否上架", name: "published", widget: "boolean", default: true }

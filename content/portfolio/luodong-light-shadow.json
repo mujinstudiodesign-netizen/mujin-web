@@ -1,0 +1,33 @@
+{
+  "slug": "luodong-light-shadow",
+  "title": "羅東 • 光影寓所",
+  "category": "Residential",
+  "location": "羅東",
+  "year": "2024",
+  "area": "32 坪",
+  "type": "新屋裝修",
+  "cover": "/images/luodong-modern-interior-design-apartment.webp",
+  "coverAlt": "羅東光影寓所室內設計案例",
+  "summary": "以簡約線條與自然光為主角，打造日常留白的居家節奏。",
+  "gallery": [
+    {
+      "src": "/images/luodong-modern-interior-design-apartment.webp",
+      "alt": "羅東現代風公寓客廳"
+    },
+    {
+      "src": "/images/spacious-modern-living-room-marble-tv-wall-yilan.webp",
+      "alt": "寬敞客廳與大理石電視牆"
+    },
+    {
+      "src": "/images/minimalist-ceiling-indirect-led-lighting-detail.webp",
+      "alt": "簡約天花 LED 間接照明"
+    },
+    {
+      "src": "/images/floating-marble-cabinet-wood-panel-led-lighting-detail.webp",
+      "alt": "懸浮大理石櫃體與木飾板"
+    }
+  ],
+  "body": "羅東新屋的格局方正，但採光條件集中於單側。我們沿著光的路徑重新組織動線，讓客廳、餐廳、書房形成連續的視覺引流。家具以低身線條壓低視覺重量，天花走簡約幾何，讓光與影成為空間真正的主角。",
+  "order": 20,
+  "published": true
+}

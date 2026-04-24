@@ -1,0 +1,29 @@
+{
+  "slug": "wujie-wooden",
+  "title": "五結 • 木質調",
+  "category": "Residential",
+  "location": "五結",
+  "year": "2023",
+  "area": "38 坪",
+  "type": "新屋裝修",
+  "cover": "/images/wujie-wooden-style-residential-design.webp",
+  "coverAlt": "五結木質調住宅設計案例",
+  "summary": "以木質語彙為主旋律，為三代同堂打造溫潤共居空間。",
+  "gallery": [
+    {
+      "src": "/images/wujie-wooden-style-residential-design.webp",
+      "alt": "五結木質風格住宅主空間"
+    },
+    {
+      "src": "/images/curved-ceiling-beam-design-modern-home-yilan.webp",
+      "alt": "弧形天花橫樑設計"
+    },
+    {
+      "src": "/images/compact-dressing-table-design-small-apartment.webp",
+      "alt": "小坪數梳妝檯設計"
+    }
+  ],
+  "body": "五結這戶是三代同堂的住家，長輩、夫妻與孩子的生活節奏各自獨立。我們以木質為貫穿語彙，透過材質的深淺、紋理的差異，暗示不同空間的個性。公區選用淺木營造開闊感；主臥深木讓休憩更安定；孩子房則保留大片留白以容納成長的變化。",
+  "order": 50,
+  "published": true
+}

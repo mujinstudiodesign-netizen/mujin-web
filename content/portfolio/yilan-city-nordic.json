@@ -1,0 +1,33 @@
+{
+  "slug": "yilan-city-nordic",
+  "title": "宜蘭市 • 北歐簡約",
+  "category": "Residential",
+  "location": "宜蘭市",
+  "year": "2023",
+  "area": "28 坪",
+  "type": "舊屋翻新",
+  "cover": "/images/yilan-city-minimalist-home-renovation.webp",
+  "coverAlt": "宜蘭市北歐簡約風格室內設計",
+  "summary": "淺木色與霧白的北歐語彙，為年輕家庭創造輕盈的日常。",
+  "gallery": [
+    {
+      "src": "/images/japandi-style-cream-tone-apartment-design-yilan.webp",
+      "alt": "奶油色 Japandi 風公寓"
+    },
+    {
+      "src": "/images/japandi-style-dining-room-light-wood-furniture.webp",
+      "alt": "Japandi 風餐廳與淺木家具"
+    },
+    {
+      "src": "/images/sage-green-sofa-warm-minimalist-living-room-decor.webp",
+      "alt": "鼠尾草綠沙發與暖調客廳"
+    },
+    {
+      "src": "/images/cozy-home-decor-detail-yilan-interior-styling.webp",
+      "alt": "居家軟裝細節"
+    }
+  ],
+  "body": "屋主是一對年輕夫妻，希望家是可以放鬆也能招待朋友的空間。我們以淺橡木、霧白與鼠尾草綠建立基礎調性，選用線條簡潔的家具，留出足夠的地面空間讓孩子跑動。廚房延伸至餐廳採開放式，讓料理與用餐成為家庭互動的核心。",
+  "order": 30,
+  "published": true
+}

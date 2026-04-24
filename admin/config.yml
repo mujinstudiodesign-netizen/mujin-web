@@ -13,7 +13,7 @@ logo_url: https://mujin.tw/images/mujin-studio-yilan-interior-design-logo.webp
 
 collections:
   - name: "portfolio"
-    label: "精選案例"
+    label: "美好見證"
     label_singular: "案例"
     folder: "content/portfolio"
     create: true

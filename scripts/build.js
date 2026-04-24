@@ -116,7 +116,7 @@ const FLOATING_ICONS = `
 `;
 
 /**
- * 導覽列；active = 'portfolio' | 'faq' | 'testimonials' | ''
+ * 導覽列；active = 'portfolio' | 'faq' | ''
  * basePath = 相對於當前頁面的根路徑（首頁與子頁的連結不同）
  */
 const header = (active = '', basePath = '') => {
@@ -148,17 +148,15 @@ const header = (active = '', basePath = '') => {
                 </div>
             </a>
             <nav class="hidden md:flex space-x-12 text-sm tracking-widest font-bold text-brand-800">
-                ${link('portfolio', 'portfolio.html', '精選案例')}
+                ${link('portfolio', 'portfolio.html', '美好見證')}
                 ${link('faq', 'faq.html', '設計解惑')}
-                ${link('testimonials', 'testimonials.html', '美好見證')}
             </nav>
             <button id="mobile-menu-btn" class="md:hidden text-brand-800 focus:outline-none"><i class="fa-solid fa-bars text-2xl"></i></button>
         </div>
         <div id="mobile-menu" class="hidden md:hidden bg-brand-50 border-t border-brand-200 shadow-lg absolute w-full left-0 top-full">
             <div class="px-6 py-4 flex flex-col space-y-4 text-center font-light text-brand-800">
-                ${mobileLink('portfolio', 'portfolio.html', '精選案例')}
+                ${mobileLink('portfolio', 'portfolio.html', '美好見證')}
                 ${mobileLink('faq', 'faq.html', '設計解惑')}
-                ${mobileLink('testimonials', 'testimonials.html', '美好見證')}
             </div>
         </div>
     </header>
@@ -206,7 +204,7 @@ const homePortfolioCards = (cases) => {
   const viewAll = cases.length > 6 ? `
             <div class="text-center mt-12">
                 <a href="portfolio.html" class="inline-block border border-brand-800 text-brand-800 px-8 py-3 text-sm tracking-widest hover:bg-brand-800 hover:text-white transition duration-300">
-                    瀏覽所有案例
+                    瀏覽所有見證
                 </a>
             </div>` : '';
 
@@ -248,8 +246,8 @@ const portfolioListPage = (cases) => {
   const schema = {
     "@context": "https://schema.org",
     "@type": "CollectionPage",
-    name: "沐錦空間設計精選案例",
-    description: "宜蘭羅東地區室內設計精選案例，包含舊屋翻新、新屋裝修、商業空間設計。",
+    name: "沐錦空間設計美好見證",
+    description: "宜蘭羅東地區室內設計美好見證案例集，包含舊屋翻新、新屋裝修、商業空間設計。",
     url: `${SITE_URL}/portfolio.html`,
     mainEntity: {
       "@type": "ItemList",
@@ -263,12 +261,12 @@ const portfolioListPage = (cases) => {
     ${GTM_HEAD}
     ${SHARED_HEAD_BASIC}
     <link rel="canonical" href="${SITE_URL}/portfolio.html" />
-    <title>精選案例 | 宜蘭羅東室內設計作品集 | 沐錦空間設計</title>
-    <meta name="description" content="沐錦空間設計精選案例集，宜蘭羅東地區的舊屋翻新、新屋裝修、預售屋客變與商業空間作品。每一案皆量身規劃，打造屬於居住者的空間敘事。">
+    <title>美好見證 | 宜蘭羅東室內設計作品集 | 沐錦空間設計</title>
+    <meta name="description" content="沐錦空間設計美好見證案例集，宜蘭羅東地區的舊屋翻新、新屋裝修、預售屋客變與商業空間作品。每一案皆量身規劃，打造屬於居住者的空間敘事。">
     <meta name="keywords" content="宜蘭室內設計作品, 羅東室內設計案例, 宜蘭舊屋翻新案例, 宜蘭商業空間設計, 沐錦空間設計作品集">
     <meta name="geo.region" content="TW-ILA" />
     <meta name="geo.placename" content="Yilan County" />
-    <meta property="og:title" content="精選案例 | 沐錦空間設計">
+    <meta property="og:title" content="美好見證 | 沐錦空間設計">
     <meta property="og:description" content="宜蘭羅東地區的室內設計作品集。">
     <meta property="og:type" content="website">
     <meta property="og:url" content="${SITE_URL}/portfolio.html">
@@ -285,8 +283,8 @@ const portfolioListPage = (cases) => {
     <main class="flex-grow pt-32 pb-20 bg-brand-50">
         <div class="container mx-auto px-6">
             <div class="text-center mb-16">
-                <span class="text-xs tracking-[0.3em] text-brand-500 uppercase block mb-2">Portfolio</span>
-                <h1 class="font-serif text-3xl md:text-4xl text-brand-800 tracking-widest">精選案例</h1>
+                <span class="text-xs tracking-[0.3em] text-brand-500 uppercase block mb-2">Success Stories</span>
+                <h1 class="font-serif text-3xl md:text-4xl text-brand-800 tracking-widest">美好見證</h1>
                 <div class="w-16 h-px bg-brand-300 mx-auto mt-6"></div>
                 <p class="text-brand-500 font-light mt-6 max-w-xl mx-auto leading-loose">每一個案場都是一段與屋主共同完成的對話。從舊屋翻新到預售屋客變，從住宅到商空，我們為每一種生活提供適切的空間敘事。</p>
             </div>
@@ -342,7 +340,7 @@ const portfolioDetailPage = (c, allCases) => {
     "@type": "BreadcrumbList",
     itemListElement: [
       { "@type": "ListItem", position: 1, name: "首頁", item: `${SITE_URL}/` },
-      { "@type": "ListItem", position: 2, name: "精選案例", item: `${SITE_URL}/portfolio.html` },
+      { "@type": "ListItem", position: 2, name: "美好見證", item: `${SITE_URL}/portfolio.html` },
       { "@type": "ListItem", position: 3, name: c.title, item: `${SITE_URL}/portfolio/${c.slug}.html` }
     ]
   };
@@ -386,7 +384,7 @@ const portfolioDetailPage = (c, allCases) => {
                 <ol class="flex flex-wrap gap-2">
                     <li><a href="../index.html" class="hover:text-brand-gold">首頁</a></li>
                     <li class="text-brand-300">/</li>
-                    <li><a href="../portfolio.html" class="hover:text-brand-gold">精選案例</a></li>
+                    <li><a href="../portfolio.html" class="hover:text-brand-gold">美好見證</a></li>
                     <li class="text-brand-300">/</li>
                     <li class="text-brand-800">${escapeHtml(c.title)}</li>
                 </ol>
@@ -498,7 +496,6 @@ function writeSitemap(cases) {
     { loc: `${SITE_URL}/`, priority: '1.0' },
     { loc: `${SITE_URL}/portfolio.html`, priority: '0.9' },
     { loc: `${SITE_URL}/faq.html`, priority: '0.7' },
-    { loc: `${SITE_URL}/testimonials.html`, priority: '0.7' },
     ...cases.map(c => ({ loc: `${SITE_URL}/portfolio/${c.slug}.html`, priority: '0.8' }))
   ];
   const body = urls.map(u => `  <url>

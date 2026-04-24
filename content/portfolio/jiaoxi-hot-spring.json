@@ -1,29 +1,18 @@
 {
   "slug": "jiaoxi-hot-spring",
-  "title": "礁溪 • 溫泉旅居",
+  "title": "宜蘭礁溪 • 現代極簡溫泉民宿",
   "category": "Commercial",
   "location": "礁溪",
   "year": "2023",
-  "area": "120 坪",
+  "area": "50 坪",
   "type": "商業空間設計",
   "cover": "/images/jiaoxi-hot-spring-hotel-commercial-design.webp",
-  "coverAlt": "礁溪溫泉旅居商業空間設計",
-  "summary": "為溫泉旅宿設計的公共空間，以深木色與石材鋪陳療癒氛圍。",
+  "coverAlt": "宜蘭礁溪現代極簡溫泉民宿設計",
+  "summary": "純白光透的渡假寓所，擺脫傳統溫泉旅館的昏暗印象，引進礁溪的自然光線。",
   "gallery": [
-    {
-      "src": "/images/jiaoxi-hot-spring-hotel-commercial-design.webp",
-      "alt": "礁溪溫泉旅居公共空間"
-    },
-    {
-      "src": "/images/illuminated-display-cabinet-black-marble-wall.webp",
-      "alt": "背光展示櫃與大理石牆"
-    },
-    {
-      "src": "/images/matte-grey-custom-cabinetry-marble-countertop-yilan.webp",
-      "alt": "霧灰訂製櫃體與大理石檯面"
-    }
+    { "src": "/images/jiaoxi-hot-spring-hotel-commercial-design.webp", "alt": "礁溪現代極簡溫泉民宿主空間" }
   ],
-  "body": "礁溪這座旅宿希望被入住的旅人記住「回到家」的安定感。我們以深木、霧灰、天然石材為主材，壓低色彩飽和度，讓視覺不搶走溫泉與山景。公區的燈光全數以間接照明處理，夜間進場時不會被突如其來的亮度打斷情緒。",
-  "order": 40,
+  "body": "業主經營的是一間強調質感與放鬆的溫泉民宿。希望能擺脫傳統溫泉旅館的昏暗印象，改以大面積的白色與玻璃元素，引進礁溪的自然光線，打造出明亮、通透且具現代感的渡假空間。\n\n視覺通透：利用清玻璃隔間與開放式佈局，讓光線在室內自由流動，放大空間感。\n純淨色調：以白色為基底，搭配淺色木紋與米色石材，營造清新無壓的住宿體驗。\n湯屋設計：針對礁溪特有的碳酸氫鈉泉（美人湯），選用抗鹼防潮的淺色磁磚與石材，好清潔且經久耐用。\n\n完工後記：這個案子打破了溫泉旅宿的既定印象，純白的風格在訂房網站上大受好評，成功吸引許多年輕族群入住。",
+  "order": 50,
   "published": true
 }

@@ -1,29 +1,18 @@
 {
   "slug": "wujie-wooden",
-  "title": "五結 • 木質調",
+  "title": "宜蘭五結 • 溫潤木質調宅邸",
   "category": "Residential",
   "location": "五結",
   "year": "2023",
-  "area": "38 坪",
+  "area": "45 坪",
   "type": "新屋裝修",
   "cover": "/images/wujie-wooden-style-residential-design.webp",
-  "coverAlt": "五結木質調住宅設計案例",
-  "summary": "以木質語彙為主旋律，為三代同堂打造溫潤共居空間。",
+  "coverAlt": "宜蘭五結室內設計-溫潤木質調透天別墅",
+  "summary": "彷彿置身森林的自然系居家：日式無印與北歐混搭的療癒氛圍。",
   "gallery": [
-    {
-      "src": "/images/wujie-wooden-style-residential-design.webp",
-      "alt": "五結木質風格住宅主空間"
-    },
-    {
-      "src": "/images/curved-ceiling-beam-design-modern-home-yilan.webp",
-      "alt": "弧形天花橫樑設計"
-    },
-    {
-      "src": "/images/compact-dressing-table-design-small-apartment.webp",
-      "alt": "小坪數梳妝檯設計"
-    }
+    { "src": "/images/wujie-wooden-style-residential-design.webp", "alt": "五結溫潤木質調透天別墅" }
   ],
-  "body": "五結這戶是三代同堂的住家，長輩、夫妻與孩子的生活節奏各自獨立。我們以木質為貫穿語彙，透過材質的深淺、紋理的差異，暗示不同空間的個性。公區選用淺木營造開闊感；主臥深木讓休憩更安定；孩子房則保留大片留白以容納成長的變化。",
-  "order": 50,
+  "body": "位於五結的透天別墅，屋主喜愛日式無印與北歐混搭的自然氛圍。我們以大量淺色木皮與白色為基底，將窗外的綠意引入室內，打造出一個能讓身心徹底放鬆的療癒空間。\n\n木質格柵：入口玄關運用木格柵元素，劃分空間同時保持光線穿透，增加層次感。\n開放式書房：客廳後方規劃開放式閱讀區，促進家人間的互動與情感交流。\n大面採光：保留大面積落地窗，讓自然光成為空間中最奢華的裝飾，呼應宜蘭透天裝潢的優勢。\n\n沐錦觀點：家就該是最放鬆的地方。透過溫潤的木質元素，我們為屋主找回了生活的寧靜步調。",
+  "order": 40,
   "published": true
 }

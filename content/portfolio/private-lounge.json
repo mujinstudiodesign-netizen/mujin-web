@@ -10,20 +10,9 @@
   "coverAlt": "宜蘭私人招待所商業空間設計",
   "summary": "為重要賓客打造的私人招待場域，沉穩、低調、具儀式感。",
   "gallery": [
-    {
-      "src": "/images/yilan-luxury-commercial-space-design.webp",
-      "alt": "宜蘭私人招待所主空間"
-    },
-    {
-      "src": "/images/luxury-walk-in-closet-glass-wardrobe-design.webp",
-      "alt": "訂製玻璃更衣間"
-    },
-    {
-      "src": "/images/modern-vanity-mirror-led-lighting-design-yilan.webp",
-      "alt": "LED 鏡面梳妝檯"
-    }
+    { "src": "/images/yilan-luxury-commercial-space-design.webp", "alt": "宜蘭私人招待所主空間" }
   ],
   "body": "業主希望這是一處能招待重要朋友、也能獨處休息的場所。我們以深色系為基底，搭配大量訂製收納，讓空間既具招待的氣勢，又能在日常中保有私人儀式感。每一處材質收邊都反覆推敲，確保近距離看也禁得起檢視。",
-  "order": 60,
+  "order": 70,
   "published": true
 }

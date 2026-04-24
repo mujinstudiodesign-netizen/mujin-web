@@ -1,41 +1,30 @@
 {
   "slug": "dongshan-hidden-luxury",
-  "title": "冬山 • 隱奢藝邸",
+  "title": "冬山鄉間 • 墨白光影",
   "category": "Residential",
   "location": "冬山",
   "year": "2024",
-  "area": "45 坪",
+  "area": "百坪",
   "type": "舊屋翻新",
   "cover": "/images/black-marble-tv-wall-illuminated-display-cabinet-dongshan.webp",
-  "coverAlt": "宜蘭冬山農舍規劃室內設計案例",
-  "summary": "以黑色大理石電視牆為核心，結合木紋飾板與間接光，打造沉穩內斂的生活場景。",
+  "coverAlt": "冬山鄉間墨白光影室內設計案例",
+  "summary": "位於冬山的獨棟農舍，以極致黑白對比與戲劇性光影，打破傳統農舍的刻板印象。",
   "gallery": [
-    {
-      "src": "/images/black-marble-tv-wall-illuminated-display-cabinet-dongshan.webp",
-      "alt": "冬山黑色大理石電視牆與展示櫃"
-    },
-    {
-      "src": "/images/backlit-black-marble-tv-wall-wood-paneling.webp",
-      "alt": "背光大理石電視牆與木飾板"
-    },
-    {
-      "src": "/images/black-marble-accent-wall-window-seating-dongshan.webp",
-      "alt": "冬山窗邊臥榻與大理石牆面"
-    },
-    {
-      "src": "/images/black-marble-wood-panel-feature-wall-stone-texture.webp",
-      "alt": "大理石與木質主牆肌理"
-    },
-    {
-      "src": "/images/dark-marble-desk-study-area-countryside-view-dongshan.webp",
-      "alt": "冬山書房深色大理石書桌"
-    },
-    {
-      "src": "/images/textured-stone-wall-led-lighting-detail-dongshan.webp",
-      "alt": "石材牆 LED 間接光細節"
-    }
+    { "src": "/images/black-marble-tv-wall-illuminated-display-cabinet-dongshan.webp", "alt": "黑大理石電視牆、發光展示櫃與公仔" },
+    { "src": "/images/spacious-modern-living-room-marble-tv-wall-yilan.webp", "alt": "寬敞現代客廳與大理石電視牆全景" },
+    { "src": "/images/black-marble-accent-wall-window-seating-dongshan.webp", "alt": "黑大理石造型牆與臥榻、大面採光" },
+    { "src": "/images/illuminated-display-cabinet-black-marble-wall.webp", "alt": "發光展示櫃與強烈對比黑大理石牆" },
+    { "src": "/images/minimalist-ceiling-indirect-led-lighting-detail.webp", "alt": "極簡天花板與間接照明折線細節" },
+    { "src": "/images/matte-grey-custom-cabinetry-marble-countertop-yilan.webp", "alt": "霧灰系統櫃與黑大理石檯面" },
+    { "src": "/images/dark-marble-desk-study-area-countryside-view-dongshan.webp", "alt": "深色大理石書桌與窗外農田景觀" },
+    { "src": "/images/backlit-black-marble-tv-wall-wood-paneling.webp", "alt": "背光黑大理石電視牆與木格柵" },
+    { "src": "/images/luxury-walk-in-closet-glass-wardrobe-design.webp", "alt": "奢華玻璃門更衣室與光影" },
+    { "src": "/images/modern-vanity-mirror-led-lighting-design-yilan.webp", "alt": "現代化妝鏡與方形 LED 燈框" },
+    { "src": "/images/textured-stone-wall-led-lighting-detail-dongshan.webp", "alt": "粗獷石材與黑大理石、燈帶細節" },
+    { "src": "/images/floating-marble-cabinet-wood-panel-led-lighting-detail.webp", "alt": "黑大理石與木格柵細節、懸浮大理石抽屜與間接照明" },
+    { "src": "/images/black-marble-wood-panel-feature-wall-stone-texture.webp", "alt": "黑大理石與木紋拼接主牆、粗獷石材與懸浮櫃" }
   ],
-  "body": "屋主期待空間不張揚卻能被感受到質地。我們以黑色大理石為主敘事，側以木紋飾板平衡冷感，背光設計讓石材在夜間呈現不同層次。書房區延伸同一套語言，將窗外田野納入視線，讓閱讀成為與自然對話的片刻。",
+  "body": "位於冬山的獨棟農舍，打破傳統農舍的刻板印象。屋主追求高品質、前衛的生活體驗。我們運用「對比」與「光影」為設計核心，以大膽的黑白色調鋪陳，結合線條燈具與精緻材質，打造出極具現代感的奢華空間。\n\n戲劇性光影：利用隱藏式燈帶與線條燈，營造層次豐富的光影視覺，打破黑色的沉悶。\n極致黑白對比：大膽運用大理石紋黑牆與純白烤漆，創造強烈的視覺衝擊與現代感。\n個性化陳設：結合前衛藝術品與高品質傢俱，展現屋主的時尚品味。\n\n沐錦觀點：運用極致的黑白對比與燈光佈局，我們打破了農舍的既定印象，為屋主打造出宛如現代藝術展間的生活場域。",
   "order": 10,
   "published": true
 }

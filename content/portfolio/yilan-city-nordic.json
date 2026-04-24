@@ -1,33 +1,25 @@
 {
   "slug": "yilan-city-nordic",
-  "title": "宜蘭市 • 北歐簡約",
+  "title": "宜蘭市區 • 現代極簡寓所",
   "category": "Residential",
   "location": "宜蘭市",
   "year": "2023",
-  "area": "28 坪",
+  "area": "20 坪",
   "type": "舊屋翻新",
   "cover": "/images/yilan-city-minimalist-home-renovation.webp",
-  "coverAlt": "宜蘭市北歐簡約風格室內設計",
-  "summary": "淺木色與霧白的北歐語彙，為年輕家庭創造輕盈的日常。",
+  "coverAlt": "宜蘭市區現代極簡寓所室內設計",
+  "summary": "以「減法」為核心，剔除多餘裝飾，讓空間回歸最純粹的舒適，引進大面採光，讓光影成為主角。",
   "gallery": [
-    {
-      "src": "/images/japandi-style-cream-tone-apartment-design-yilan.webp",
-      "alt": "奶油色 Japandi 風公寓"
-    },
-    {
-      "src": "/images/japandi-style-dining-room-light-wood-furniture.webp",
-      "alt": "Japandi 風餐廳與淺木家具"
-    },
-    {
-      "src": "/images/sage-green-sofa-warm-minimalist-living-room-decor.webp",
-      "alt": "鼠尾草綠沙發與暖調客廳"
-    },
-    {
-      "src": "/images/cozy-home-decor-detail-yilan-interior-styling.webp",
-      "alt": "居家軟裝細節"
-    }
+    { "src": "/images/yilan-city-minimalist-home-renovation.webp", "alt": "宜蘭市極簡翻新主空間" },
+    { "src": "/images/yilan-minimalist-interior-design-living-room-renovation.webp", "alt": "宜蘭市極簡客廳翻新" },
+    { "src": "/images/japandi-style-cream-tone-apartment-design-yilan.webp", "alt": "奶油色 Japandi 風公寓" },
+    { "src": "/images/sage-green-sofa-warm-minimalist-living-room-decor.webp", "alt": "鼠尾草綠沙發與暖調客廳" },
+    { "src": "/images/cozy-home-decor-detail-yilan-interior-styling.webp", "alt": "居家軟裝細節" },
+    { "src": "/images/japandi-style-dining-room-light-wood-furniture.webp", "alt": "Japandi 風餐廳與淺木家具" },
+    { "src": "/images/compact-dressing-table-design-small-apartment.webp", "alt": "小坪數梳妝檯設計" },
+    { "src": "/images/curved-ceiling-beam-design-modern-home-yilan.webp", "alt": "弧形天花橫樑設計" }
   ],
-  "body": "屋主是一對年輕夫妻，希望家是可以放鬆也能招待朋友的空間。我們以淺橡木、霧白與鼠尾草綠建立基礎調性，選用線條簡潔的家具，留出足夠的地面空間讓孩子跑動。廚房延伸至餐廳採開放式，讓料理與用餐成為家庭互動的核心。",
-  "order": 30,
+  "body": "位於宜蘭市中心的公寓，屋主嚮往極簡主義的生活方式。我們以「減法」為核心，剔除多餘裝飾，讓空間回歸最純粹的舒適，引進大面採光，讓光影成為主角。\n\n開放視野：打破傳統隔間，將客廳與書房開放規劃，放大視覺尺度。\n純淨色調：暖白色系基底搭配溫潤木地板，營造明亮放鬆氛圍。\n隱藏細節：利用牆面整合收納櫃體，將視覺干擾降至最低。",
+  "order": 20,
   "published": true
 }

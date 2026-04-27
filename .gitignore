@@ -4,3 +4,8 @@ node_modules/
 .env.local
 *.log
 .netlify/
+
+# Microsoft Office 開檔時的暫存鎖定檔
+~$*
+*.tmp
+Thumbs.db

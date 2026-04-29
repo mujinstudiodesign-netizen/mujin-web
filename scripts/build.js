@@ -5,17 +5,32 @@
  * 讀取 content/portfolio/*.json，產出：
  *   - portfolio.html            案例列表頁
  *   - portfolio/[slug].html     每個案例詳情頁
+ *   - process.html              服務流程頁（含 HowTo schema）
  *   - sitemap.xml               更新 sitemap
  *   - index.html                替換 <!-- PORTFOLIO:START --> ~ <!-- PORTFOLIO:END --> 區塊
+ *
+ * 所有共用片段（head / GTM / header / footer / floating icons / scripts）
+ * 已抽到 scripts/shared.js，達到「Vite 級的 partial 化」效果但無框架相依。
  */
 
 const fs = require('fs');
 const path = require('path');
+const {
+  SITE_URL,
+  SHARED_HEAD_BASIC,
+  SUPPLEMENTAL_CSS,
+  GTM_HEAD,
+  GTM_NOSCRIPT,
+  FLOATING_ICONS,
+  header,
+  FOOTER,
+  COMMON_SCRIPTS,
+  breadcrumb,
+} = require('./shared.js');
 
 const ROOT = path.resolve(__dirname, '..');
 const CONTENT_DIR = path.join(ROOT, 'content', 'portfolio');
 const PORTFOLIO_DIR = path.join(ROOT, 'portfolio');
-const SITE_URL = 'https://mujin.tw';
 
 // ---------- utils ----------
 const escapeHtml = (s = '') =>
@@ -49,140 +64,8 @@ function readAllCases() {
   return published;
 }
 
-// ---------- shared fragments ----------
-const SHARED_HEAD_BASIC = `
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="icon" href="/images/logo-icon.png" type="image/png">
-    <link rel="apple-touch-icon" href="/images/logo-icon.png">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&family=Noto+Serif+TC:wght@400;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-`;
-
-// 補充預編 styles.css 裡沒有的 Tailwind utilities（案例列表 / 詳情頁使用）
-const SUPPLEMENTAL_CSS = `
-    <style>
-        .aspect-\\[16\\/9\\] { aspect-ratio: 16/9; }
-        .aspect-\\[16\\/8\\] { aspect-ratio: 16/8; }
-        .p-8 { padding: 2rem; }
-        .p-10 { padding: 2.5rem; }
-        .p-14 { padding: 3.5rem; }
-        .pt-8 { padding-top: 2rem; }
-        .pt-32 { padding-top: 8rem; }
-        .pb-20 { padding-bottom: 5rem; }
-        .py-3 { padding-top: 0.75rem; padding-bottom: 0.75rem; }
-        .max-w-xl { max-width: 36rem; }
-        .max-w-3xl { max-width: 48rem; }
-        .max-w-7xl { max-width: 80rem; }
-        .mt-20 { margin-top: 5rem; }
-        .mt-16 { margin-top: 4rem; }
-        .gap-4 { gap: 1rem; }
-        .gap-6 { gap: 1.5rem; }
-        .self-center { align-self: center; }
-        .flex-grow { flex-grow: 1; }
-        .min-h-screen { min-height: 100vh; }
-        .line-clamp-2 { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
-        @media (min-width: 768px) {
-            .md\\:p-10 { padding: 2.5rem; }
-            .md\\:p-12 { padding: 3rem; }
-            .md\\:p-14 { padding: 3.5rem; }
-            .md\\:aspect-\\[16\\/8\\] { aspect-ratio: 16/8; }
-            .md\\:text-5xl { font-size: 3rem; line-height: 1; }
-        }
-    </style>
-`;
-
-const GTM_HEAD = `
-    <script>(function (w, d, s, l, i) {
-            w[l] = w[l] || []; w[l].push({
-                'gtm.start': new Date().getTime(), event: 'gtm.js'
-            }); var f = d.getElementsByTagName(s)[0],
-                j = d.createElement(s), dl = l != 'dataLayer' ? '&l=' + l : ''; j.async = true; j.src =
-                    'https://www.googletagmanager.com/gtm.js?id=' + i + dl; f.parentNode.insertBefore(j, f);
-        })(window, document, 'script', 'dataLayer', 'GTM-T5RTXK6L');</script>
-`;
-
-const GTM_NOSCRIPT = `<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-T5RTXK6L" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>`;
-
-const FLOATING_ICONS = `
-    <div class="fixed right-0 top-1/2 -translate-y-1/2 z-[100] flex flex-col gap-2">
-        <a href="https://www.facebook.com/profile.php?id=61579849735643" target="_blank" rel="noopener noreferrer" title="Facebook" class="float-icon w-12 h-12 bg-[#1877F2] text-white flex items-center justify-center rounded-l-lg shadow-lg"><i class="fa-brands fa-facebook-f text-xl"></i></a>
-        <a href="https://www.instagram.com/mujinstudiodesign/" target="_blank" rel="noopener noreferrer" title="Instagram" class="float-icon w-12 h-12 bg-instagram text-white flex items-center justify-center rounded-l-lg shadow-lg"><i class="fa-brands fa-instagram text-xl"></i></a>
-        <a href="https://qr-official.line.me/gs/M_153kwalu_GW.png?oat_content=qr" target="_blank" rel="noopener noreferrer" title="Line" class="float-icon w-12 h-12 bg-[#06C755] text-white flex items-center justify-center rounded-l-lg shadow-lg"><i class="fa-brands fa-line text-2xl"></i></a>
-        <a href="https://docs.google.com/forms/d/e/1FAIpQLSdPI2DRVGC1Qtm0VXkKpeF2lWFtzxVMVBO056vxgE2jp5PdsA/viewform" target="_blank" rel="noopener noreferrer" title="線上預約" class="float-icon w-12 h-12 bg-brand-gold text-white flex items-center justify-center rounded-l-lg shadow-lg"><i class="fa-solid fa-calendar-check text-xl"></i></a>
-    </div>
-`;
-
-/**
- * 導覽列；active = 'portfolio' | 'faq' | ''
- * basePath = 相對於當前頁面的根路徑（首頁與子頁的連結不同）
- */
-const header = (active = '', basePath = '') => {
-  const link = (key, href, label) => {
-    const activeStyle = active === key
-      ? 'text-brand-gold relative group'
-      : 'hover:text-brand-500 transition relative group';
-    const underline = active === key
-      ? `<span class="absolute -bottom-1 left-0 w-full h-px bg-brand-gold"></span>`
-      : `<span class="absolute -bottom-1 left-0 w-0 h-px bg-brand-500 transition-all group-hover:w-full"></span>`;
-    return `<a href="${basePath}${href}" class="${activeStyle}">${label}${underline}</a>`;
-  };
-
-  const mobileLink = (key, href, label) => {
-    const cls = active === key
-      ? 'block py-2 text-brand-gold font-bold mobile-link'
-      : 'block py-2 hover:bg-brand-100 mobile-link';
-    return `<a href="${basePath}${href}" class="${cls}">${label}</a>`;
-  };
-
-  return `
-    <header class="fixed w-full top-0 z-50 bg-brand-50/90 backdrop-blur-md transition-all duration-300 border-b border-brand-300/30" id="navbar">
-        <div class="container mx-auto px-6 py-1 flex justify-between items-center">
-            <a href="${basePath}index.html" class="flex items-center gap-3 group hover:opacity-80 transition">
-                <img src="${basePath}images/mujin-studio-yilan-interior-design-logo.webp" alt="沐錦空間設計 Mujin Studio Logo" width="1182" height="1182" class="h-16 md:h-20 w-auto">
-                <div class="flex flex-col justify-center">
-                    <span class="font-serif text-xl tracking-widest text-brand-800 font-bold leading-none mb-1">MUJIN</span>
-                    <span class="text-sm font-medium tracking-widest text-brand-500 leading-none">沐錦空間設計</span>
-                </div>
-            </a>
-            <nav class="hidden md:flex space-x-12 text-sm tracking-widest font-bold text-brand-800">
-                ${link('portfolio', 'portfolio.html', '美好見證')}
-                ${link('faq', 'faq.html', '設計解惑')}
-            </nav>
-            <button id="mobile-menu-btn" class="md:hidden text-brand-800 focus:outline-none"><i class="fa-solid fa-bars text-2xl"></i></button>
-        </div>
-        <div id="mobile-menu" class="hidden md:hidden bg-brand-50 border-t border-brand-200 shadow-lg absolute w-full left-0 top-full">
-            <div class="px-6 py-4 flex flex-col space-y-4 text-center font-light text-brand-800">
-                ${mobileLink('portfolio', 'portfolio.html', '美好見證')}
-                ${mobileLink('faq', 'faq.html', '設計解惑')}
-            </div>
-        </div>
-    </header>
-`;
-};
-
-const FOOTER = `
-    <footer class="bg-brand-900 text-brand-100 py-10 border-t border-brand-800 mt-auto">
-        <div class="container mx-auto px-6 text-center md:text-left">
-            <p>&copy; <span id="year">2024</span> Mujin Studio. All Rights Reserved.</p>
-            <p class="text-xs text-brand-300 mt-2">宜蘭縣冬山鄉冬山路三段465號 | 宜蘭室內設計推薦 | 羅東舊屋翻新</p>
-            <p class="text-xs text-brand-300 mt-1">營業時間：週一~週五 09:00~18:00 / 週六 13:00~18:00</p>
-        </div>
-    </footer>
-`;
-
-const COMMON_SCRIPTS = `
-    <script>
-        const btn = document.getElementById('mobile-menu-btn');
-        const menu = document.getElementById('mobile-menu');
-        const mobileLinks = document.querySelectorAll('.mobile-link');
-        btn && btn.addEventListener('click', () => { menu.classList.toggle('hidden'); });
-        mobileLinks.forEach(link => link.addEventListener('click', () => menu.classList.add('hidden')));
-        document.getElementById('year').textContent = new Date().getFullYear();
-    </script>
-`;
+// 共用片段已搬到 scripts/shared.js（見上方 import）
+// 此區僅保留本檔特有的頁面組裝邏輯
 
 // ---------- 首頁案例卡片（6 張） ----------
 const homePortfolioCards = (cases) => {
@@ -254,6 +137,10 @@ const portfolioListPage = (cases) => {
       itemListElement: schemaItems
     }
   };
+  const breadcrumbSchema = breadcrumb([
+    { name: "首頁", url: `${SITE_URL}/` },
+    { name: "美好見證", url: `${SITE_URL}/portfolio.html` },
+  ]);
 
   return `<!DOCTYPE html>
 <html lang="zh-TW" class="scroll-smooth">
@@ -272,6 +159,7 @@ const portfolioListPage = (cases) => {
     <meta property="og:url" content="${SITE_URL}/portfolio.html">
     ${cases[0] ? `<meta property="og:image" content="${SITE_URL}${cases[0].cover}">` : ''}
     <script type="application/ld+json">${JSON.stringify(schema, null, 2)}</script>
+    <script type="application/ld+json">${JSON.stringify(breadcrumbSchema, null, 2)}</script>
     <link href="styles.css" rel="stylesheet">
     ${SUPPLEMENTAL_CSS}
 </head>
@@ -465,6 +353,204 @@ const portfolioDetailPage = (c, allCases) => {
 </html>`;
 };
 
+// ---------- 服務流程 process.html ----------
+const PROCESS_STEPS = [
+  {
+    code: '01', icon: 'fa-comments',
+    title: '初次接洽',
+    desc: '透過電話、Line 或表單聯繫我們，簡述您的案場類型、坪數與預算範圍。',
+    detail: '我們會在 24 小時內回覆，安排第一次免費諮詢。請預先準備好房屋現況照片或平面圖，能讓討論更聚焦。',
+    duration: '1–2 天'
+  },
+  {
+    code: '02', icon: 'fa-mug-hot',
+    title: '面對面諮詢',
+    desc: '在工作室或案場與設計師深度對談，了解您的居住習慣與美學偏好。',
+    detail: '此階段不收任何費用。我們會準備過往作品集與材料樣本，讓您具體感受設計方向。雙方都評估合適後再進入下一步。',
+    duration: '2 小時'
+  },
+  {
+    code: '03', icon: 'fa-handshake',
+    title: '丈量與簽約',
+    desc: '設計師到案場精確丈量，確認結構、管線、採光，並簽訂設計合約。',
+    detail: '丈量資料是後續所有設計圖的基礎。設計合約採實坪計價，所有費用透明列出，不含任何隱藏成本。',
+    duration: '1 週內'
+  },
+  {
+    code: '04', icon: 'fa-pen-ruler',
+    title: '平面規劃',
+    desc: '依您的需求繪製平面配置圖、水電配置圖，討論動線與機能。',
+    detail: '此階段含 2 次免費修改。平面圖確認後，將進入 3D 視覺階段，避免後續改動。',
+    duration: '2–3 週'
+  },
+  {
+    code: '05', icon: 'fa-cube',
+    title: '3D 視覺與材料',
+    desc: '產出 3D 精裝視覺預演，搭配實體材料樣本，讓您真實預見成果。',
+    detail: '我們會帶您到展示間或材料廠選樣，所有用料均可實品確認。3D 視覺含 2 次免費調整。',
+    duration: '2–3 週'
+  },
+  {
+    code: '06', icon: 'fa-file-contract',
+    title: '工程報價與簽約',
+    desc: '提供詳細工程報價單，逐項列出材料、工資、數量，簽訂工程合約。',
+    detail: '報價單依政府採購法格式編制，每一項目都可逐項檢視。簽約後才進入施工階段，不會臨時追加費用。',
+    duration: '1–2 週'
+  },
+  {
+    code: '07', icon: 'fa-hard-hat',
+    title: '施工監造',
+    desc: '工程進場後每週提供進度報告，重點工序皆有設計師現場監造。',
+    detail: '重要工程（水電、結構）會錄影存檔，避免日後爭議。施工期間您可隨時到場參觀，案件規模不同工期約 6–14 週。',
+    duration: '6–14 週'
+  },
+  {
+    code: '08', icon: 'fa-house-chimney',
+    title: '驗收交屋',
+    desc: '完工後逐項驗收，附完整保固清單與保養手冊，正式交屋。',
+    detail: '保固期內所有工程瑕疵免費修繕。交屋後一年內提供免費售後保養服務一次。',
+    duration: '1 週'
+  },
+];
+
+const processPage = () => {
+  const stepCards = PROCESS_STEPS.map((s, i) => `
+                <article class="process-step bg-white p-8 md:p-10 shadow-sm border-l-4 border-brand-gold flex flex-col md:flex-row gap-8" id="step-${s.code}">
+                    <div class="flex-shrink-0 text-center md:text-left">
+                        <div class="w-20 h-20 bg-brand-50 border border-brand-200 mx-auto md:mx-0 flex items-center justify-center mb-3">
+                            <i class="fa-solid ${s.icon} text-3xl text-brand-gold"></i>
+                        </div>
+                        <span class="block font-serif text-3xl text-brand-800 tracking-wider">${s.code}</span>
+                        <span class="block text-xs tracking-[0.2em] text-brand-500 mt-1">${s.duration}</span>
+                    </div>
+                    <div class="flex-1">
+                        <h2 class="font-serif text-2xl md:text-3xl text-brand-800 tracking-wider mb-3">${s.title}</h2>
+                        <p class="text-brand-600 leading-loose font-light mb-4">${s.desc}</p>
+                        <p class="text-sm text-brand-500 leading-loose font-light border-t border-brand-100 pt-4">${s.detail}</p>
+                    </div>
+                </article>`).join('');
+
+  const howToSchema = {
+    "@context": "https://schema.org",
+    "@type": "HowTo",
+    "name": "沐錦空間設計｜室內設計合作流程",
+    "description": "從初次諮詢到完工交屋的完整 8 步驟室內設計合作流程。",
+    "image": `${SITE_URL}/images/mujin-studio-yilan-interior-design-logo.webp`,
+    "totalTime": "P3M",
+    "estimatedCost": { "@type": "MonetaryAmount", "currency": "TWD", "value": "依坪數與材料規格而定" },
+    "step": PROCESS_STEPS.map((s, i) => ({
+      "@type": "HowToStep",
+      "position": i + 1,
+      "name": s.title,
+      "text": `${s.desc} ${s.detail}`,
+      "url": `${SITE_URL}/process.html#step-${s.code}`
+    }))
+  };
+
+  const breadcrumbSchema = breadcrumb([
+    { name: "首頁", url: `${SITE_URL}/` },
+    { name: "服務流程", url: `${SITE_URL}/process.html` },
+  ]);
+
+  const websiteSchemaPage = {
+    "@context": "https://schema.org",
+    "@type": "WebPage",
+    "name": "服務流程 | 沐錦空間設計",
+    "url": `${SITE_URL}/process.html`,
+    "speakable": {
+      "@type": "SpeakableSpecification",
+      "cssSelector": [".process-step h2", ".process-step p"]
+    }
+  };
+
+  return `<!DOCTYPE html>
+<html lang="zh-TW" class="scroll-smooth">
+<head>
+    ${GTM_HEAD}
+    ${SHARED_HEAD_BASIC}
+    <link rel="canonical" href="${SITE_URL}/process.html" />
+    <title>服務流程 | 從諮詢到交屋的 8 步驟 | 沐錦空間設計</title>
+    <meta name="description" content="沐錦空間設計完整服務流程：從初次接洽、面對面諮詢、丈量簽約、平面規劃、3D 視覺、工程報價、施工監造到驗收交屋的 8 個階段，每一步都透明可預期。">
+    <meta name="keywords" content="宜蘭室內設計流程, 沐錦空間設計流程, 室內設計合作步驟, 設計監造流程, 宜蘭裝修流程">
+    <meta name="geo.region" content="TW-ILA" />
+    <meta name="geo.placename" content="Yilan County" />
+    <meta property="og:title" content="服務流程 | 沐錦空間設計">
+    <meta property="og:description" content="從初次接洽到驗收交屋的 8 步驟，每一階段都透明可預期。">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="${SITE_URL}/process.html">
+    <meta property="og:image" content="${SITE_URL}/images/mujin-studio-yilan-interior-design-logo.webp">
+    <script type="application/ld+json">${JSON.stringify(howToSchema, null, 2)}</script>
+    <script type="application/ld+json">${JSON.stringify(breadcrumbSchema, null, 2)}</script>
+    <script type="application/ld+json">${JSON.stringify(websiteSchemaPage, null, 2)}</script>
+    <link href="styles.css" rel="stylesheet">
+    ${SUPPLEMENTAL_CSS}
+    <style>
+        .process-step { transition: transform 0.3s, box-shadow 0.3s; }
+        .process-step:hover { transform: translateY(-3px); box-shadow: 0 12px 32px rgba(0,0,0,0.06); }
+        .timeline-line { position: absolute; left: 50%; top: 0; bottom: 0; width: 1px; background: linear-gradient(180deg, transparent, #c9a961 20%, #c9a961 80%, transparent); transform: translateX(-50%); }
+    </style>
+</head>
+<body class="font-sans antialiased flex flex-col min-h-screen">
+    ${GTM_NOSCRIPT}
+    ${FLOATING_ICONS}
+    ${header('process')}
+
+    <main class="flex-grow pt-32 pb-20 bg-brand-50">
+        <div class="container mx-auto px-6">
+            <!-- Breadcrumb -->
+            <nav class="text-xs text-brand-500 mb-8 tracking-wider max-w-5xl mx-auto" aria-label="Breadcrumb">
+                <ol class="flex flex-wrap gap-2">
+                    <li><a href="index.html" class="hover:text-brand-gold">首頁</a></li>
+                    <li class="text-brand-300">/</li>
+                    <li class="text-brand-800">服務流程</li>
+                </ol>
+            </nav>
+
+            <!-- Header -->
+            <header class="text-center mb-20 max-w-3xl mx-auto">
+                <span class="text-xs tracking-[0.3em] text-brand-500 uppercase block mb-2">Our Process</span>
+                <h1 class="font-serif text-3xl md:text-4xl text-brand-800 tracking-widest">服務流程</h1>
+                <div class="w-16 h-px bg-brand-300 mx-auto mt-6"></div>
+                <p class="text-brand-500 font-light mt-6 leading-loose">
+                    從第一次接觸到正式交屋，我們把整套合作拆解成 8 個透明的階段。<br/>
+                    每一步都有明確的交付物與時程，讓您隨時知道目前進到哪裡、下一步是什麼。
+                </p>
+            </header>
+
+            <!-- Steps timeline -->
+            <section class="space-y-6 max-w-5xl mx-auto">
+                ${stepCards}
+            </section>
+
+            <!-- Total time summary -->
+            <section class="mt-20 max-w-3xl mx-auto bg-brand-100 p-10 md:p-12 text-center border border-brand-200">
+                <i class="fa-solid fa-clock text-3xl text-brand-gold mb-4"></i>
+                <h2 class="font-serif text-2xl text-brand-800 tracking-wider mb-4">完整流程時程</h2>
+                <p class="text-brand-600 font-light leading-loose">
+                    住宅案件約 <strong class="text-brand-800">3–5 個月</strong>　·　商空案件約 <strong class="text-brand-800">2–4 個月</strong><br/>
+                    依案件規模、材料供貨、客變需求而調整
+                </p>
+            </section>
+
+            <!-- CTA -->
+            <section class="mt-20 bg-brand-800 text-white p-10 md:p-14 text-center max-w-5xl mx-auto">
+                <h2 class="font-serif text-2xl md:text-3xl tracking-widest mb-4">準備開始您的空間故事？</h2>
+                <p class="text-brand-100 font-light mb-8 max-w-xl mx-auto leading-loose">
+                    填寫線上諮詢表單，我們將在 24 小時內回覆，安排免費的初次諮詢。
+                </p>
+                <a href="https://docs.google.com/forms/d/e/1FAIpQLSdPI2DRVGC1Qtm0VXkKpeF2lWFtzxVMVBO056vxgE2jp5PdsA/viewform" target="_blank" rel="noopener noreferrer" class="inline-block border border-white px-10 py-4 text-sm tracking-widest hover:bg-white hover:text-brand-900 transition duration-300">
+                    預約免費諮詢
+                </a>
+            </section>
+        </div>
+    </main>
+
+    ${FOOTER}
+    ${COMMON_SCRIPTS}
+</body>
+</html>`;
+};
+
 // ---------- 更新 index.html 的精選案例區塊 ----------
 function updateIndexHtml(cases) {
   const indexPath = path.join(ROOT, 'index.html');
@@ -495,6 +581,7 @@ function writeSitemap(cases) {
   const urls = [
     { loc: `${SITE_URL}/`, priority: '1.0' },
     { loc: `${SITE_URL}/portfolio.html`, priority: '0.9' },
+    { loc: `${SITE_URL}/process.html`, priority: '0.9' },
     { loc: `${SITE_URL}/faq.html`, priority: '0.7' },
     ...cases.map(c => ({ loc: `${SITE_URL}/portfolio/${c.slug}.html`, priority: '0.8' }))
   ];
@@ -536,6 +623,10 @@ function main() {
   // 寫列表頁
   fs.writeFileSync(path.join(ROOT, 'portfolio.html'), portfolioListPage(cases), 'utf8');
   console.log('[build] portfolio.html 已寫入');
+
+  // 寫 process.html（服務流程）
+  fs.writeFileSync(path.join(ROOT, 'process.html'), processPage(), 'utf8');
+  console.log('[build] process.html 已寫入');
 
   // 更新首頁
   updateIndexHtml(cases);

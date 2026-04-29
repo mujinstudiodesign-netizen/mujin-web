@@ -141,6 +141,7 @@
             </a>
             <nav class="hidden md:flex space-x-12 text-sm tracking-widest font-bold text-brand-800">
                 <a href="../portfolio.html" class="text-brand-gold relative group">美好見證<span class="absolute -bottom-1 left-0 w-full h-px bg-brand-gold"></span></a>
+                <a href="../process.html" class="hover:text-brand-500 transition relative group">服務流程<span class="absolute -bottom-1 left-0 w-0 h-px bg-brand-500 transition-all group-hover:w-full"></span></a>
                 <a href="../faq.html" class="hover:text-brand-500 transition relative group">設計解惑<span class="absolute -bottom-1 left-0 w-0 h-px bg-brand-500 transition-all group-hover:w-full"></span></a>
             </nav>
             <button id="mobile-menu-btn" class="md:hidden text-brand-800 focus:outline-none"><i class="fa-solid fa-bars text-2xl"></i></button>
@@ -148,6 +149,7 @@
         <div id="mobile-menu" class="hidden md:hidden bg-brand-50 border-t border-brand-200 shadow-lg absolute w-full left-0 top-full">
             <div class="px-6 py-4 flex flex-col space-y-4 text-center font-light text-brand-800">
                 <a href="../portfolio.html" class="block py-2 text-brand-gold font-bold mobile-link">美好見證</a>
+                <a href="../process.html" class="block py-2 hover:bg-brand-100 mobile-link">服務流程</a>
                 <a href="../faq.html" class="block py-2 hover:bg-brand-100 mobile-link">設計解惑</a>
             </div>
         </div>
@@ -253,18 +255,6 @@
             pagination: { el: ".swiper-pagination", clickable: true },
             navigation: { nextEl: ".swiper-button-next", prevEl: ".swiper-button-prev" }
         });
-    </script>
-    <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
-    <script>
-        if (window.netlifyIdentity) {
-            window.netlifyIdentity.on("init", user => {
-                if (!user) {
-                    window.netlifyIdentity.on("login", () => {
-                        document.location.href = "/admin/";
-                    });
-                }
-            });
-        }
     </script>
 </body>
 </html>

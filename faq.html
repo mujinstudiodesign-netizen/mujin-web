@@ -32,6 +32,32 @@
     <meta name="geo.position" content="24.6395;121.7725" />
     <meta name="ICBM" content="24.6395, 121.7725" />
 
+    <!-- BreadcrumbList Schema（補強，2026-04-29 加） -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      "itemListElement": [
+        { "@type": "ListItem", "position": 1, "name": "首頁", "item": "https://mujin.tw/" },
+        { "@type": "ListItem", "position": 2, "name": "設計解惑", "item": "https://mujin.tw/faq.html" }
+      ]
+    }
+    </script>
+
+    <!-- Speakable Schema（語音助理朗讀，補強 2026-04-29） -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebPage",
+      "name": "宜蘭室內設計常見問題",
+      "url": "https://mujin.tw/faq.html",
+      "speakable": {
+        "@type": "SpeakableSpecification",
+        "cssSelector": [".faq-question", ".faq-answer"]
+      }
+    }
+    </script>
+
     <script type="application/ld+json">
     {
       "@context": "https://schema.org",
@@ -142,6 +168,11 @@
                     <span
                         class="absolute -bottom-1 left-0 w-0 h-px bg-brand-500 transition-all group-hover:w-full"></span>
                 </a>
+                <a href="process.html" class="hover:text-brand-500 transition relative group">
+                    服務流程
+                    <span
+                        class="absolute -bottom-1 left-0 w-0 h-px bg-brand-500 transition-all group-hover:w-full"></span>
+                </a>
                 <a href="faq.html" class="text-brand-gold relative group">
                     設計解惑
                     <span class="absolute -bottom-1 left-0 w-full h-px bg-brand-gold"></span>
@@ -157,6 +188,7 @@
             class="hidden md:hidden bg-brand-50 border-t border-brand-200 shadow-lg absolute w-full left-0 top-full">
             <div class="px-6 py-4 flex flex-col space-y-4 text-center font-light text-brand-800">
                 <a href="portfolio.html" class="block py-2 hover:bg-brand-100">美好見證</a>
+                <a href="process.html" class="block py-2 hover:bg-brand-100">服務流程</a>
                 <a href="faq.html" class="block py-2 text-brand-gold font-bold">設計解惑</a>
             </div>
         </div>

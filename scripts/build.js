@@ -170,6 +170,15 @@ const portfolioListPage = (cases) => {
 
     <main class="flex-grow pt-32 pb-20 bg-brand-50">
         <div class="container mx-auto px-6">
+            <!-- Breadcrumb -->
+            <nav class="text-xs text-brand-500 mb-12 tracking-wider max-w-7xl mx-auto" aria-label="Breadcrumb">
+                <ol class="flex flex-wrap gap-2">
+                    <li><a href="index.html" class="hover:text-brand-gold">首頁</a></li>
+                    <li class="text-brand-300">/</li>
+                    <li class="text-brand-800">美好見證</li>
+                </ol>
+            </nav>
+
             <div class="text-center mb-16">
                 <span class="text-xs tracking-[0.3em] text-brand-500 uppercase block mb-2">Success Stories</span>
                 <h1 class="font-serif text-3xl md:text-4xl text-brand-800 tracking-widest">美好見證</h1>

@@ -1,18 +1,19 @@
 {
   "slug": "yuanshan-wabi-sabi",
-  "title": "宜蘭員山 • 寧靜侘寂風",
+  "title": "宜蘭員山 • 寧靜侘寂風（設計提案）",
   "category": "Residential",
   "location": "員山",
   "year": "2025",
   "area": "60 坪",
-  "type": "舊屋翻新",
+  "type": "老屋翻新",
+  "concept": true,
   "cover": "/images/mujin-studio-design-philosophy-yuanshan.webp",
-  "coverAlt": "宜蘭員山透天別墅-侘寂風設計",
-  "summary": "自地自建透天別墅，展現不完美但真實的侘寂美學，實現歲月靜好。",
+  "coverAlt": "宜蘭員山透天別墅設計提案-侘寂風風格參考",
+  "summary": "自地自建透天別墅情境，展現不完美但真實的侘寂美學（設計提案研究）。",
   "gallery": [
-    { "src": "/images/mujin-studio-design-philosophy-yuanshan.webp", "alt": "員山侘寂風透天別墅主空間" }
+    { "src": "/images/mujin-studio-design-philosophy-yuanshan.webp", "alt": "員山侘寂風透天別墅風格提案" }
   ],
-  "body": "位於田野間的透天別墅，屋主嚮往「不完美但真實」的侘寂美學。希望回家就能卸下城市喧囂，感受時間流動。\n\n塗料藝術：大面積手作紋理礦物塗料，隨光影展現不同表情。\n減法設計：捨棄繁複造型，僅用原木層板與孤枝花藝點綴。\n光影規劃：全室無主燈，改以間接照明營造沉穩氛圍。",
+  "body": "本提案以員山田野間的透天別墅為設計情境，假設屋主嚮往「不完美但真實」的侘寂美學，希望回家就能卸下城市喧囂，感受時間流動。\n\n塗料藝術：大面積手作紋理礦物塗料，隨光影展現不同表情。\n減法設計：捨棄繁複造型，僅用原木層板與孤枝花藝點綴。\n光影規劃：全室無主燈，改以間接照明營造沉穩氛圍。\n\n沐錦觀點：侘寂並非單純的留白，而是讓材料與時間對話。本提案是團隊對「靜」的一次風格研究。",
   "order": 60,
   "published": true
 }

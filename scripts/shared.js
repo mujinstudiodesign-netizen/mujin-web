@@ -2,18 +2,26 @@
  * 沐錦空間設計 共用片段（Partials）
  *
  * 把 build.js 內重複的 head、GTM、header、footer、浮動 icon、
- * 共用 script 抽到此檔。新增頁面時只要 import 即可，不再複製貼上。
+ * 共用 script 抽到此檔。新增頁面時只要 import 即可。
  *
- * 設計概念：模仿 Vite + Handlebars 的 partial 概念，但保持純 Node.js
- * 不引入任何套件相依，符合沐錦「零依賴部署」的原則。
+ * 2026-05-15 大改：
+ *   - 新增 COOKIE_CONSENT、CONTACT_FORM、MUJIN_COMPONENT_CSS 三個 partial
+ *   - FLOATING_ICONS 加入電話 0989326660、改線上預約導內嵌表單
+ *   - header 新增「收費標準」「沐錦筆記」兩個 nav
+ *   - FOOTER 加入隱私權 / 使用條款 / Email 連結
  */
 
 const SITE_URL = 'https://mujin.tw';
+const PHONE_DISPLAY = '0989 326 660';
+const PHONE_HREF = '0989326660';
+const EMAIL = 'mujinstudiodesign@gmail.com';
+const FORMSPREE_ENDPOINT = 'https://formspree.io/f/maqvrlby';
 
 // ============== Head ==============
 const SHARED_HEAD_BASIC = `
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script>document.documentElement.classList.add('mj-anim');</script>
     <link rel="icon" href="/images/logo-icon.png" type="image/png">
     <link rel="apple-touch-icon" href="/images/logo-icon.png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -21,6 +29,499 @@ const SHARED_HEAD_BASIC = `
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;700&family=Noto+Serif+TC:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 `;
+
+// 預編 styles.css 沒覆蓋到的元件樣式（cookie consent / 表單 / pricing 表格 / blog cards）
+const MUJIN_COMPONENT_CSS = `
+    <style>
+        /* ========= 元件補強樣式（2026-05-15 新增） ========= */
+
+        /* Cookie 同意條款 */
+        .mj-cookie {
+            position: fixed; left: 0; right: 0; bottom: 0; z-index: 9999;
+            transform: translateY(100%); opacity: 0; pointer-events: none;
+            transition: transform 0.5s ease-out, opacity 0.5s ease-out;
+        }
+        .mj-cookie.is-visible { transform: translateY(0); opacity: 1; pointer-events: auto; }
+        .mj-cookie-inner {
+            background: rgb(35 61 56);
+            color: rgb(245 247 246);
+            border-top: 1px solid rgba(84,113,108,0.4);
+            box-shadow: 0 -10px 30px rgba(0,0,0,0.25);
+        }
+        .mj-cookie-container {
+            max-width: 1280px; margin: 0 auto;
+            padding: 1.5rem 1.5rem;
+            display: flex; flex-direction: column; align-items: flex-start; gap: 1.25rem;
+        }
+        @media (min-width: 1024px) {
+            .mj-cookie-container { flex-direction: row; align-items: center; padding: 1.75rem 2rem; gap: 2rem; }
+        }
+        .mj-cookie-title {
+            font-family: 'Noto Serif TC', serif;
+            font-size: 1rem; letter-spacing: 0.2em; margin-bottom: 0.5rem;
+            color: rgb(245 247 246); display: flex; align-items: center; gap: 0.75rem;
+        }
+        .mj-cookie-desc { font-size: 0.8rem; line-height: 1.7; color: rgba(245,247,246,0.78); letter-spacing: 0.04em; }
+        .mj-cookie-desc a { color: rgb(212 175 99); text-decoration: underline; text-underline-offset: 4px; }
+        .mj-cookie-actions { display: flex; flex-direction: column; gap: 0.75rem; width: 100%; flex-shrink: 0; }
+        @media (min-width: 640px) { .mj-cookie-actions { flex-direction: row; width: auto; } }
+        .mj-btn-ghost {
+            padding: 0.75rem 1.5rem; border: 1px solid rgba(245,247,246,0.4); color: rgba(245,247,246,0.9);
+            font-size: 0.75rem; letter-spacing: 0.25em; text-transform: uppercase;
+            background: transparent; cursor: pointer; transition: all 0.3s; white-space: nowrap;
+        }
+        .mj-btn-ghost:hover { border-color: rgb(245 247 246); color: rgb(245 247 246); }
+        .mj-btn-solid {
+            padding: 0.75rem 1.5rem; background: rgb(212 175 99); color: rgb(35 61 56);
+            font-size: 0.75rem; letter-spacing: 0.25em; text-transform: uppercase; font-weight: 500;
+            cursor: pointer; transition: all 0.3s; white-space: nowrap; border: 1px solid rgb(212 175 99);
+        }
+        .mj-btn-solid:hover { background: rgb(245 247 246); color: rgb(35 61 56); border-color: rgb(245 247 246); }
+
+        /* 內嵌諮詢表單 — 淺色 Japandi 風（與一方圓深色 bar 風差異化） */
+        .mj-form-wrap {
+            background: rgb(255 255 255);
+            color: rgb(50 87 80);
+            border: 1px solid rgb(235 239 238);
+            padding: 2.5rem 1.75rem;
+            position: relative;
+            box-shadow: 0 24px 60px rgba(35,61,56,0.10), 0 4px 12px rgba(35,61,56,0.04);
+        }
+        @media (min-width: 768px) { .mj-form-wrap { padding: 3.25rem 3rem; } }
+        /* 左上角細金線 — 沐錦的視覺印記 */
+        .mj-form-wrap::before {
+            content: ""; position: absolute; top: 0; left: 0;
+            width: 56px; height: 3px; background: rgb(212 175 99);
+        }
+        .mj-form-title {
+            font-family: 'Noto Serif TC', serif;
+            font-size: 1.875rem; letter-spacing: 0.08em;
+            color: rgb(35 61 56); margin-bottom: 0.5rem; font-weight: 500;
+        }
+        .mj-form-subtitle {
+            font-size: 1rem; color: rgb(84 113 108);
+            margin-bottom: 2.5rem; line-height: 1.5;
+            letter-spacing: 0.04em;
+        }
+        .mj-form-subtitle::before {
+            content: ""; display: inline-block;
+            width: 18px; height: 1px;
+            background: rgb(212 175 99);
+            vertical-align: middle;
+            margin-right: 0.6rem; margin-bottom: 0.2rem;
+        }
+        .mj-form .mj-row { display: grid; grid-template-columns: 1fr; column-gap: 1.25rem; }
+        @media (min-width: 768px) { .mj-form .mj-row { grid-template-columns: 1fr 1fr; } }
+        .mj-field { margin-bottom: 1.25rem; }
+        .mj-label {
+            display: block;
+            font-size: 0.82rem; color: rgb(84 113 108);
+            margin-bottom: 0.45rem; font-weight: 500; letter-spacing: 0.04em;
+        }
+        .mj-label .mj-required { color: rgb(212 175 99); margin-left: 0.2rem; }
+        .mj-input {
+            width: 100%;
+            background: rgb(245 247 246);
+            border: 1px solid transparent;
+            color: rgb(35 61 56);
+            font-size: 0.95rem; padding: 0.8rem 1rem;
+            font-family: inherit;
+            transition: background 0.3s, border-color 0.3s;
+        }
+        .mj-input:focus {
+            outline: none;
+            background: rgb(255 255 255);
+            border-color: rgb(84 113 108);
+        }
+        .mj-input::placeholder { color: rgb(170 185 182); font-weight: 300; font-size: 0.9rem; }
+        select.mj-input {
+            appearance: none; -webkit-appearance: none; cursor: pointer;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' fill='none'%3e%3cpath stroke='%2354716C' stroke-width='1.5' d='M1 1.5l5 5 5-5'/%3e%3c/svg%3e");
+            background-repeat: no-repeat; background-position: right 1rem center;
+            padding-right: 2.25rem;
+        }
+        select.mj-input option { background: rgb(255 255 255); color: rgb(35 61 56); }
+        textarea.mj-input { resize: none; min-height: 6rem; line-height: 1.6; }
+        .mj-submit {
+            width: 100%; padding: 1.05rem; margin-top: 1.5rem;
+            background: rgb(50 87 80); color: rgb(255 255 255);
+            font-family: 'Noto Serif TC', serif;
+            font-size: 1rem; letter-spacing: 0.32em;
+            border: none; cursor: pointer;
+            transition: background 0.3s, transform 0.2s, box-shadow 0.3s;
+        }
+        .mj-submit:hover { background: rgb(35 61 56); box-shadow: 0 10px 30px rgba(35,61,56,0.15); }
+        .mj-submit:active { transform: scale(0.99); }
+        .mj-form-note { margin-top: 1.25rem; font-size: 0.72rem; color: rgb(170 185 182); text-align: center; letter-spacing: 0.04em; }
+        .mj-form-note a { color: rgb(84 113 108); text-decoration: underline; text-underline-offset: 3px; }
+        .mj-form-note a:hover { color: rgb(212 175 99); }
+
+        /* Radio 群組（對話式表單用） */
+        .mj-radio-group {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.55rem;
+            margin-top: 0.1rem;
+        }
+        @media (min-width: 640px) {
+            .mj-radio-group { grid-template-columns: repeat(3, 1fr); }
+        }
+        .mj-radio-group--time { grid-template-columns: repeat(2, 1fr) !important; }
+        @media (min-width: 768px) {
+            .mj-radio-group--time { grid-template-columns: repeat(4, 1fr) !important; }
+        }
+        .mj-radio {
+            position: relative;
+            display: flex; align-items: center;
+            padding: 0.7rem 0.85rem;
+            background: rgb(245 247 246);
+            border: 1px solid transparent;
+            cursor: pointer;
+            transition: background 0.25s, border-color 0.25s, color 0.25s;
+            font-size: 0.88rem;
+            color: rgb(84 113 108);
+            user-select: none;
+        }
+        .mj-radio-group--time .mj-radio { padding: 0.65rem 0.75rem; }
+        .mj-radio-text { display: flex; flex-direction: column; line-height: 1.25; }
+        .mj-radio-period { font-size: 0.9rem; }
+        .mj-radio-range { font-size: 0.72rem; color: rgb(170 185 182); margin-top: 0.2rem; letter-spacing: 0.02em; }
+        .mj-radio:has(input[type="radio"]:checked) .mj-radio-range { color: rgb(84 113 108); }
+        .mj-radio:hover { border-color: rgb(170 185 182); }
+        .mj-radio input[type="radio"] {
+            position: absolute; opacity: 0; pointer-events: none; width: 0; height: 0;
+        }
+        .mj-radio-dot {
+            width: 13px; height: 13px;
+            border: 1px solid rgb(170 185 182);
+            border-radius: 50%;
+            margin-right: 0.55rem;
+            transition: border-color 0.25s, background 0.25s, box-shadow 0.25s;
+            flex-shrink: 0;
+        }
+        .mj-radio:has(input[type="radio"]:checked) {
+            background: white;
+            border-color: rgb(50 87 80);
+            color: rgb(35 61 56);
+        }
+        .mj-radio:has(input[type="radio"]:checked) .mj-radio-dot {
+            border-color: rgb(50 87 80);
+            background: rgb(50 87 80);
+            box-shadow: inset 0 0 0 2px rgb(255 255 255);
+        }
+        /* fallback：keyboard focus 對 radio 群組 */
+        .mj-radio input[type="radio"]:focus-visible + .mj-radio-dot {
+            box-shadow: 0 0 0 3px rgba(212,175,99,0.3);
+        }
+
+        /* 隱私 / 使用條款 / pricing 通用內頁版型 */
+        .mj-doc-header { padding-top: 10rem; padding-bottom: 5rem; text-align: center; }
+        @media (min-width: 768px) { .mj-doc-header { padding-top: 12rem; padding-bottom: 6rem; } }
+        .mj-doc-title { font-family: 'Noto Serif TC', serif; font-size: 2.5rem; color: rgb(50 87 80); letter-spacing: 0.18em; font-weight: 500; }
+        @media (min-width: 768px) { .mj-doc-title { font-size: 3rem; } }
+        .mj-doc-divider { width: 48px; height: 1px; background: rgba(84,113,108,0.5); margin: 1.5rem auto; }
+        .mj-doc-eyebrow { color: rgb(84 113 108); font-size: 0.8rem; letter-spacing: 0.4em; text-transform: uppercase; }
+        .mj-doc-main { width: 100%; max-width: 900px; margin: 0 auto; padding: 0 1.5rem 8rem; }
+        .mj-doc-intro { font-size: 0.85rem; letter-spacing: 0.18em; line-height: 1.85; color: rgb(84 113 108); text-align: center; max-width: 640px; margin: 0 auto 4rem; }
+        .mj-doc-article > section { margin-bottom: 3.5rem; }
+        .mj-doc-num { font-family: 'Noto Serif TC', serif; font-size: 1.75rem; color: rgb(84 113 108); margin-right: 1rem; }
+        .mj-doc-h3 { font-family: 'Noto Serif TC', serif; font-size: 1.3rem; letter-spacing: 0.18em; color: rgb(50 87 80); font-weight: 500; display: inline-block; }
+        .mj-doc-body { font-size: 0.95rem; line-height: 1.95; color: rgb(84 113 108); letter-spacing: 0.04em; padding-left: 2.75rem; margin-top: 1rem; }
+        .mj-doc-body p { margin-bottom: 1rem; }
+        .mj-doc-body ul { list-style: disc; margin-left: 1.25rem; margin-bottom: 1rem; }
+        .mj-doc-body li { margin-bottom: 0.4rem; }
+        .mj-doc-body strong { color: rgb(50 87 80); font-weight: 600; }
+        .mj-doc-body a { color: rgb(212 175 99); text-decoration: underline; text-underline-offset: 3px; }
+        .mj-doc-footer { font-size: 0.7rem; letter-spacing: 0.3em; color: rgba(84,113,108,0.7); text-align: center; margin-top: 4rem; text-transform: uppercase; }
+
+        /* Pricing 列表 — 菜單卷軸式（2026-05-16 改版） */
+        .mj-price-list { max-width: 920px; margin: 0 auto; }
+        .mj-price-row {
+            display: grid;
+            grid-template-columns: 48px 1fr auto;
+            column-gap: 2.5rem; row-gap: 0.4rem;
+            padding: 2.5rem 0;
+            border-bottom: 1px solid rgb(235 239 238);
+            align-items: start;
+        }
+        .mj-price-row:last-child { border-bottom: none; }
+        .mj-price-num {
+            font-family: 'Noto Serif TC', serif;
+            font-size: 1.75rem; color: rgb(212 175 99);
+            line-height: 1; font-weight: 400;
+            letter-spacing: 0.05em;
+        }
+        .mj-price-info { min-width: 0; }
+        .mj-price-name {
+            font-family: 'Noto Serif TC', serif;
+            font-size: 1.5rem; color: rgb(35 61 56);
+            margin-bottom: 0.3rem; font-weight: 500;
+            letter-spacing: 0.06em;
+        }
+        .mj-price-en {
+            font-size: 0.72rem; letter-spacing: 0.28em;
+            color: rgb(170 185 182);
+            text-transform: uppercase;
+            margin-bottom: 1.1rem;
+        }
+        .mj-price-desc {
+            font-size: 0.92rem; color: rgb(84 113 108);
+            line-height: 1.85;
+            max-width: 480px;
+        }
+        .mj-price-why {
+            display: inline-block;
+            margin-top: 0.9rem;
+            font-size: 0.78rem; color: rgb(50 87 80);
+            background: rgba(212,175,99,0.12);
+            padding: 0.35rem 0.75rem;
+            letter-spacing: 0.04em;
+        }
+        .mj-price-value { text-align: right; padding-top: 0.2rem; }
+        .mj-price-amount {
+            font-family: 'Noto Serif TC', serif;
+            font-size: 1.5rem; color: rgb(35 61 56);
+            font-weight: 500; line-height: 1.2;
+            white-space: nowrap;
+            letter-spacing: 0.02em;
+        }
+        .mj-price-amount .mj-price-currency {
+            font-size: 0.78rem; color: rgb(170 185 182);
+            letter-spacing: 0.15em; margin-right: 0.3rem;
+            font-weight: 400;
+        }
+        .mj-price-unit {
+            font-size: 0.78rem; color: rgb(84 113 108);
+            margin-top: 0.45rem;
+            letter-spacing: 0.1em;
+        }
+        @media (max-width: 768px) {
+            .mj-price-row {
+                grid-template-columns: 32px 1fr;
+                column-gap: 1.2rem;
+            }
+            .mj-price-num { font-size: 1.3rem; }
+            .mj-price-name { font-size: 1.2rem; }
+            .mj-price-value { grid-column: 2; text-align: left; padding-top: 0.5rem; }
+            .mj-price-amount { font-size: 1.3rem; }
+            .mj-price-unit { text-align: left; }
+        }
+
+        /* 透明承諾 三欄區塊 */
+        .mj-promise-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+            max-width: 920px;
+            margin: 5rem auto 0;
+        }
+        @media (min-width: 768px) {
+            .mj-promise-grid { grid-template-columns: repeat(3, 1fr); gap: 2rem; }
+        }
+        .mj-promise-item {
+            background: rgb(245 247 246);
+            padding: 2rem 1.75rem;
+            position: relative;
+            border-top: 1px solid rgb(212 175 99);
+        }
+        .mj-promise-icon {
+            color: rgb(212 175 99);
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            display: block;
+        }
+        .mj-promise-title {
+            font-family: 'Noto Serif TC', serif;
+            font-size: 1.1rem; color: rgb(35 61 56);
+            margin-bottom: 0.5rem; font-weight: 500;
+            letter-spacing: 0.1em;
+        }
+        .mj-promise-desc {
+            font-size: 0.85rem; color: rgb(84 113 108);
+            line-height: 1.75;
+        }
+
+        /* 卷軸式 hero（pricing / 其他內頁用） */
+        .mj-scroll-hero {
+            text-align: center;
+            padding: 10rem 1rem 5rem;
+        }
+        @media (min-width: 768px) {
+            .mj-scroll-hero { padding: 12rem 1rem 6rem; }
+        }
+        .mj-scroll-hero-eyebrow {
+            display: inline-block;
+            font-size: 0.7rem; letter-spacing: 0.4em;
+            color: rgb(212 175 99);
+            text-transform: uppercase;
+            margin-bottom: 1.5rem;
+            position: relative; padding: 0 2rem;
+        }
+        .mj-scroll-hero-eyebrow::before,
+        .mj-scroll-hero-eyebrow::after {
+            content: ""; position: absolute; top: 50%;
+            width: 24px; height: 1px;
+            background: rgba(212,175,99,0.5);
+        }
+        .mj-scroll-hero-eyebrow::before { left: -8px; }
+        .mj-scroll-hero-eyebrow::after { right: -8px; }
+        .mj-scroll-hero-title {
+            font-family: 'Noto Serif TC', serif;
+            font-size: 2.5rem; color: rgb(35 61 56);
+            letter-spacing: 0.2em; font-weight: 500;
+            margin-bottom: 1.5rem;
+        }
+        @media (min-width: 768px) {
+            .mj-scroll-hero-title { font-size: 3.25rem; }
+        }
+        .mj-scroll-hero-tagline {
+            font-size: 1rem; color: rgb(84 113 108);
+            letter-spacing: 0.1em;
+            max-width: 540px;
+            margin: 0 auto;
+            line-height: 1.85;
+        }
+
+        /* Blog 卡片 */
+        .mj-blog-card { display: block; background: white; overflow: hidden; transition: transform 0.4s, box-shadow 0.4s; box-shadow: 0 4px 16px rgba(0,0,0,0.04); }
+        .mj-blog-card:hover { transform: translateY(-4px); box-shadow: 0 16px 40px rgba(0,0,0,0.08); }
+        .mj-blog-card-img { aspect-ratio: 16/10; overflow: hidden; background: rgb(235 239 238); }
+        .mj-blog-card-img img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s; }
+        .mj-blog-card:hover .mj-blog-card-img img { transform: scale(1.05); }
+        .mj-blog-card-body { padding: 1.5rem 1.5rem 2rem; }
+        .mj-blog-meta { font-size: 0.7rem; color: rgb(84 113 108); letter-spacing: 0.2em; text-transform: uppercase; margin-bottom: 0.75rem; }
+        .mj-blog-card h3 { font-family: 'Noto Serif TC', serif; font-size: 1.15rem; color: rgb(50 87 80); line-height: 1.6; margin-bottom: 0.75rem; letter-spacing: 0.05em; }
+        .mj-blog-card p { font-size: 0.85rem; color: rgb(84 113 108); line-height: 1.7; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+
+        /* Blog 詳情頁 markdown 排版 */
+        .mj-article-body { color: rgb(84 113 108); line-height: 1.95; font-size: 1rem; }
+        .mj-article-body h2 { font-family: 'Noto Serif TC', serif; font-size: 1.5rem; color: rgb(50 87 80); margin: 3rem 0 1rem; letter-spacing: 0.1em; }
+        .mj-article-body h3 { font-family: 'Noto Serif TC', serif; font-size: 1.2rem; color: rgb(50 87 80); margin: 2rem 0 0.75rem; letter-spacing: 0.08em; }
+        .mj-article-body p { margin-bottom: 1.25rem; }
+        .mj-article-body ul, .mj-article-body ol { margin: 1rem 0 1.25rem 1.5rem; }
+        .mj-article-body ul { list-style: disc; }
+        .mj-article-body ol { list-style: decimal; }
+        .mj-article-body li { margin-bottom: 0.4rem; }
+        .mj-article-body strong { color: rgb(50 87 80); }
+        .mj-article-body blockquote { border-left: 3px solid rgb(212 175 99); padding-left: 1.25rem; margin: 1.5rem 0; color: rgb(50 87 80); font-style: italic; }
+
+        /* Concept Study badge（覆蓋於案例圖左上） */
+        .mj-concept-badge {
+            position: absolute; top: 1rem; left: 1rem; z-index: 5;
+            background: rgba(35,61,56,0.92); color: rgb(212 175 99);
+            font-size: 0.65rem; letter-spacing: 0.25em; text-transform: uppercase;
+            padding: 0.4rem 0.8rem; backdrop-filter: blur(4px);
+        }
+        .mj-concept-notice {
+            background: rgba(212,175,99,0.08); border-left: 3px solid rgb(212 175 99);
+            padding: 1rem 1.5rem; margin-bottom: 2rem; font-size: 0.85rem; letter-spacing: 0.05em; color: rgb(50 87 80);
+        }
+        .mj-concept-notice strong { color: rgb(50 87 80); }
+
+        /* ========= Scroll Reveal 動畫（SEO 友善） ========= */
+        /* 預設為「可見」狀態 — 搜尋引擎、no-JS、舊瀏覽器都直接看到內容 */
+        /* 只有當 <html class="mj-anim"> 被早期腳本加上時，.reveal 才隱藏等動畫 */
+        .mj-anim .reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.9s ease-out, transform 0.9s ease-out; will-change: opacity, transform; }
+        .mj-anim .reveal.is-visible { opacity: 1; transform: translateY(0); }
+        .mj-anim .reveal-fade { opacity: 0; transition: opacity 1.1s ease-out; transform: none; }
+        .mj-anim .reveal-fade.is-visible { opacity: 1; }
+        .mj-anim .reveal-scale { opacity: 0; transform: scale(0.96); transition: opacity 0.9s ease-out, transform 0.9s ease-out; }
+        .mj-anim .reveal-scale.is-visible { opacity: 1; transform: scale(1); }
+        @media (prefers-reduced-motion: reduce) {
+            .mj-anim .reveal, .mj-anim .reveal-fade, .mj-anim .reveal-scale { opacity: 1 !important; transform: none !important; transition: none !important; }
+        }
+
+        /* 卡片 hover 微互動（不依賴 reveal） */
+        .mj-hover-lift { transition: transform 0.45s ease-out, box-shadow 0.45s ease-out; }
+        .mj-hover-lift:hover { transform: translateY(-6px); box-shadow: 0 20px 40px rgba(35,61,56,0.12); }
+
+        /* Footer 極簡兩列 */
+        .mj-footer-bar {
+            display: flex; flex-direction: column;
+            gap: 0.75rem;
+            align-items: center;
+        }
+        @media (min-width: 768px) {
+            .mj-footer-bar {
+                flex-direction: row;
+                justify-content: space-between;
+                align-items: center;
+                gap: 1rem;
+            }
+        }
+        .mj-footer-brand-line { display: flex; align-items: center; }
+        .mj-footer-link {
+            color: inherit;
+            transition: color 0.25s;
+            border-bottom: 1px solid transparent;
+        }
+        .mj-footer-link:hover { color: rgb(212 175 99); border-bottom-color: rgba(212,175,99,0.5); }
+
+        /* Contact 區塊 — 左欄地圖 flex-grow 撐齊右欄表單高度 */
+        .mj-contact-grid {
+            display: flex; flex-direction: column; gap: 3rem;
+        }
+        @media (min-width: 1024px) {
+            .mj-contact-grid { flex-direction: row; gap: 5rem; align-items: stretch; }
+        }
+        .mj-contact-col { width: 100%; }
+        @media (min-width: 1024px) {
+            .mj-contact-col { width: 50%; }
+            /* 左欄 flex-column 撐高，右欄保持 block — form 自然高度主導 */
+            .mj-contact-col:first-child { display: flex; flex-direction: column; }
+        }
+        .mj-contact-map {
+            width: 100%; min-height: 16rem;
+            background: rgb(235 239 238);
+            position: relative; border-radius: 0.5rem; overflow: hidden;
+        }
+        @media (min-width: 1024px) {
+            .mj-contact-map { flex: 1 1 auto; }
+        }
+        /* 表單緊湊化（讓自然高度與左欄相近） */
+        .mj-contact-col .mj-form-wrap { padding: 2.25rem 1.75rem; }
+        @media (min-width: 768px) {
+            .mj-contact-col .mj-form-wrap { padding: 2.5rem 2.25rem; }
+        }
+        .mj-contact-col .mj-form-subtitle { margin-bottom: 1.5rem; }
+        .mj-contact-col .mj-field { margin-bottom: 0.95rem; }
+        .mj-contact-col .mj-submit { margin-top: 1rem; padding: 0.95rem; }
+
+        /* ========= 補強 styles.css 預編集合缺失的工具類 ========= */
+        /* nav 用的 spacing & breakpoint (lg = 1024px) */
+        .space-x-6 > :not([hidden]) ~ :not([hidden]) { margin-left: 1.5rem; }
+        .space-x-8 > :not([hidden]) ~ :not([hidden]) { margin-left: 2rem; }
+        @media (min-width: 1024px) {
+            .lg\\:flex { display: flex; }
+            .lg\\:hidden { display: none; }
+            .lg\\:space-x-8 > :not([hidden]) ~ :not([hidden]) { margin-left: 2rem; }
+            .lg\\:space-x-10 > :not([hidden]) ~ :not([hidden]) { margin-left: 2.5rem; }
+        }
+        /* 補預編 CSS 缺的 spacing utilities */
+        .text-base { font-size: 1rem; line-height: 1.5rem; }
+        .mt-8 { margin-top: 2rem; }
+        .mt-12 { margin-top: 3rem; }
+        .mt-24 { margin-top: 6rem; }
+        .mb-8 { margin-bottom: 2rem; }
+        .mb-12 { margin-bottom: 3rem; }
+        .mb-24 { margin-bottom: 6rem; }
+        .gap-y-2 { row-gap: 0.5rem; }
+        .gap-x-3 { column-gap: 0.75rem; }
+        .gap-x-4 { column-gap: 1rem; }
+        .gap-x-6 { column-gap: 1.5rem; }
+        .gap-x-8 { column-gap: 2rem; }
+        .py-6 { padding-top: 1.5rem; padding-bottom: 1.5rem; }
+        .py-8 { padding-top: 2rem; padding-bottom: 2rem; }
+        .py-10 { padding-top: 2.5rem; padding-bottom: 2.5rem; }
+        .mt-auto { margin-top: auto; }
+        .w-10 { width: 2.5rem; }
+        .mb-5 { margin-bottom: 1.25rem; }
+    </style>
+`;
+
+// 早期 class-flip：放在 <head> 內、所有渲染之前，把 <html> 加上 mj-anim
+// 這樣搜尋引擎與 no-JS 不會看到隱藏內容，啟用 JS 的瀏覽器才進入動畫狀態
+const ANIM_BOOTSTRAP = `<script>document.documentElement.classList.add('mj-anim');</script>`;
 
 // 補充預編 styles.css 沒有的 Tailwind utilities（案例列表 / 詳情頁 / process 共用）
 const SUPPLEMENTAL_CSS = `
@@ -68,19 +569,27 @@ const GTM_HEAD = `
 
 const GTM_NOSCRIPT = `<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-T5RTXK6L" height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>`;
 
-// ============== 浮動 icons ==============
-const FLOATING_ICONS = `
+// ============== 浮動 icons（電話 / FB / IG / LINE / 線上預約） ==============
+/**
+ * @param basePath - 相對於當前頁面到根的路徑（首頁 '' / 子頁 '../'）
+ */
+const floatingIcons = (basePath = '') => `
     <div class="fixed right-0 top-1/2 -translate-y-1/2 z-[100] flex flex-col gap-2">
+        <a href="tel:${PHONE_HREF}" title="電話諮詢 ${PHONE_DISPLAY}" aria-label="撥打電話 ${PHONE_DISPLAY}"
+            class="float-icon w-12 h-12 bg-brand-800 text-white flex items-center justify-center rounded-l-lg shadow-lg"><i class="fa-solid fa-phone text-xl"></i></a>
         <a href="https://www.facebook.com/profile.php?id=61579849735643" target="_blank" rel="noopener noreferrer" title="Facebook" class="float-icon w-12 h-12 bg-[#1877F2] text-white flex items-center justify-center rounded-l-lg shadow-lg"><i class="fa-brands fa-facebook-f text-xl"></i></a>
         <a href="https://www.instagram.com/mujinstudiodesign/" target="_blank" rel="noopener noreferrer" title="Instagram" class="float-icon w-12 h-12 bg-instagram text-white flex items-center justify-center rounded-l-lg shadow-lg"><i class="fa-brands fa-instagram text-xl"></i></a>
-        <a href="https://qr-official.line.me/gs/M_153kwalu_GW.png?oat_content=qr" target="_blank" rel="noopener noreferrer" title="Line" class="float-icon w-12 h-12 bg-[#06C755] text-white flex items-center justify-center rounded-l-lg shadow-lg"><i class="fa-brands fa-line text-2xl"></i></a>
-        <a href="https://docs.google.com/forms/d/e/1FAIpQLSdPI2DRVGC1Qtm0VXkKpeF2lWFtzxVMVBO056vxgE2jp5PdsA/viewform" target="_blank" rel="noopener noreferrer" title="線上預約" class="float-icon w-12 h-12 bg-brand-gold text-white flex items-center justify-center rounded-l-lg shadow-lg"><i class="fa-solid fa-calendar-check text-xl"></i></a>
+        <a href="https://lin.ee/xc0cNJ4" target="_blank" rel="noopener noreferrer" title="Line" class="float-icon w-12 h-12 bg-[#06C755] text-white flex items-center justify-center rounded-l-lg shadow-lg"><i class="fa-brands fa-line text-2xl"></i></a>
+        <a href="${basePath}index.html#contact" title="線上預約諮詢" aria-label="跳至線上預約表單" class="float-icon w-12 h-12 bg-brand-gold text-white flex items-center justify-center rounded-l-lg shadow-lg"><i class="fa-solid fa-calendar-check text-xl"></i></a>
     </div>
 `;
 
+// 向後相容：舊變數名（部分頁面可能還在引用）
+const FLOATING_ICONS = floatingIcons('');
+
 // ============== Header (含手機選單) ==============
 /**
- * @param active - 'portfolio' | 'process' | 'faq' | ''
+ * @param active - 'portfolio' | 'pricing' | 'process' | 'faq' | 'blog' | ''
  * @param basePath - 相對於當前頁面的根路徑（首頁 '' / 子頁 '../'）
  */
 const header = (active = '', basePath = '') => {
@@ -108,68 +617,216 @@ const header = (active = '', basePath = '') => {
                 <img src="${basePath}images/mujin-studio-yilan-interior-design-logo.webp" alt="沐錦空間設計 Mujin Studio Logo" width="1182" height="1182" class="h-16 md:h-20 w-auto">
                 <div class="flex flex-col justify-center">
                     <span class="font-serif text-xl tracking-widest text-brand-800 font-bold leading-none mb-1">MUJIN</span>
-                    <span class="text-sm font-medium tracking-widest text-brand-500 leading-none">沐錦空間設計</span>
+                    <span class="text-sm font-medium tracking-wider text-brand-500 leading-none">沐錦空間設計</span>
                 </div>
             </a>
-            <nav class="hidden md:flex space-x-12 text-sm tracking-widest font-bold text-brand-800">
+            <nav class="hidden lg:flex space-x-8 text-base tracking-wider font-medium text-brand-800">
                 ${link('portfolio', 'portfolio.html', '美好見證')}
+                ${link('pricing', 'pricing.html', '收費標準')}
                 ${link('process', 'process.html', '服務流程')}
                 ${link('faq', 'faq.html', '設計解惑')}
+                ${link('blog', 'blog.html', '沐錦筆記')}
             </nav>
-            <button id="mobile-menu-btn" class="md:hidden text-brand-800 focus:outline-none"><i class="fa-solid fa-bars text-2xl"></i></button>
+            <button id="mobile-menu-btn" class="lg:hidden text-brand-800 focus:outline-none"><i class="fa-solid fa-bars text-2xl"></i></button>
         </div>
-        <div id="mobile-menu" class="hidden md:hidden bg-brand-50 border-t border-brand-200 shadow-lg absolute w-full left-0 top-full">
+        <div id="mobile-menu" class="hidden lg:hidden bg-brand-50 border-t border-brand-200 shadow-lg absolute w-full left-0 top-full">
             <div class="px-6 py-4 flex flex-col space-y-4 text-center font-light text-brand-800">
                 ${mobileLink('portfolio', 'portfolio.html', '美好見證')}
+                ${mobileLink('pricing', 'pricing.html', '收費標準')}
                 ${mobileLink('process', 'process.html', '服務流程')}
                 ${mobileLink('faq', 'faq.html', '設計解惑')}
+                ${mobileLink('blog', 'blog.html', '沐錦筆記')}
             </div>
         </div>
     </header>
 `;
 };
 
-// ============== Footer ==============
-const FOOTER = `
-    <footer class="bg-brand-900 text-brand-100 py-10 border-t border-brand-800 mt-auto">
-        <div class="container mx-auto px-6 text-center md:text-left">
-            <p>&copy; <span id="year">2024</span> Mujin Studio. All Rights Reserved.</p>
-            <p class="text-xs text-brand-300 mt-2">宜蘭縣冬山鄉冬山路三段465號 | 宜蘭室內設計推薦 | 羅東舊屋翻新</p>
-            <p class="text-xs text-brand-300 mt-1">營業時間：週一~週五 09:00~18:00 / 週六 13:00~18:00</p>
+// ============== 統一 CTA Section（淺色落款卡片，2026-05-16 改版） ==============
+/**
+ * 統一各頁底部的「預約諮詢」CTA。標題 + 副標 + 深綠按鈕，前面金線分隔。
+ * @param heading - 主標題（例如「準備好聊聊預算了嗎？」）
+ * @param desc - 副標說明文
+ * @param btnText - 按鈕文字（預設「預約諮詢」）
+ * @param basePath - 相對根路徑（首頁 '' / 子頁 '../'）
+ */
+const ctaSection = ({ heading, desc, btnText = '預約諮詢', basePath = '' }) => `
+    <section class="mt-24 mb-12 max-w-3xl mx-auto text-center reveal">
+        <div class="w-12 h-px bg-brand-gold mx-auto mb-6"></div>
+        <h2 class="font-serif text-2xl md:text-3xl text-brand-800 tracking-widest mb-4">${heading}</h2>
+        <p class="text-brand-500 font-light mb-8 max-w-xl mx-auto leading-loose">${desc}</p>
+        <a href="${basePath}index.html#contact" class="inline-block bg-brand-800 text-white px-10 py-4 text-sm tracking-widest hover:bg-brand-900 transition duration-300">${btnText}</a>
+    </section>
+`;
+
+// ============== Footer（極簡兩列・品牌＋版權，2026-05-16 v5 改版） ==============
+const footer = (basePath = '') => `
+    <footer class="bg-brand-900 text-brand-100 mt-auto">
+        <div class="container mx-auto px-6 py-10">
+            <div class="mj-footer-bar">
+                <p class="mj-footer-brand-line">
+                    <span class="font-serif text-base tracking-[0.3em] text-brand-100">沐錦空間設計</span>
+                    <span class="text-brand-800 mx-3">·</span>
+                    <span class="text-xs tracking-[0.4em] text-brand-300 uppercase">Mujin Studio</span>
+                </p>
+                <p class="text-xs tracking-wider text-brand-300">
+                    <span class="text-brand-500">&copy; <span id="year">2026</span> Mujin Studio. All rights reserved.</span>
+                    <span class="text-brand-800 mx-3">·</span>
+                    <a href="${basePath}privacy.html" class="mj-footer-link">隱私權政策</a>
+                    <span class="text-brand-800 mx-3">·</span>
+                    <a href="${basePath}terms.html" class="mj-footer-link">使用條款</a>
+                </p>
+            </div>
         </div>
     </footer>
 `;
 
+const FOOTER = footer('');
+
 // ============== 共用 scripts ==============
 const COMMON_SCRIPTS = `
     <script>
+        // mobile menu + year
         const btn = document.getElementById('mobile-menu-btn');
         const menu = document.getElementById('mobile-menu');
         const mobileLinks = document.querySelectorAll('.mobile-link');
         btn && btn.addEventListener('click', () => { menu.classList.toggle('hidden'); });
         mobileLinks.forEach(link => link.addEventListener('click', () => menu.classList.add('hidden')));
-        document.getElementById('year').textContent = new Date().getFullYear();
+        const y = document.getElementById('year'); if (y) y.textContent = new Date().getFullYear();
+
+        // Scroll reveal — IntersectionObserver (零依賴, ~600 bytes)
+        (function () {
+            if (!('IntersectionObserver' in window)) {
+                document.querySelectorAll('.reveal, .reveal-fade, .reveal-scale').forEach(function (el) { el.classList.add('is-visible'); });
+                return;
+            }
+            var io = new IntersectionObserver(function (entries) {
+                entries.forEach(function (e) {
+                    if (e.isIntersecting) {
+                        e.target.classList.add('is-visible');
+                        io.unobserve(e.target);
+                    }
+                });
+            }, { rootMargin: '0px 0px -8% 0px', threshold: 0.12 });
+            document.querySelectorAll('.reveal, .reveal-fade, .reveal-scale').forEach(function (el) { io.observe(el); });
+        })();
     </script>
 `;
 
-// ============== Schema 工廠（補強 Top 5%）==============
+// ============== Cookie 同意條款（CMP）+ Google Consent Mode v2 ==============
+const COOKIE_CONSENT = `
+    <div id="mj-cookie" class="mj-cookie" role="dialog" aria-labelledby="mj-cookie-title">
+        <div class="mj-cookie-inner">
+            <div class="mj-cookie-container">
+                <div style="flex:1; min-width:0;">
+                    <h3 id="mj-cookie-title" class="mj-cookie-title">
+                        <i class="fa-solid fa-moon" style="color: rgb(212 175 99); font-size: 1rem;"></i>
+                        關於 Cookie 與您的隱私
+                    </h3>
+                    <p class="mj-cookie-desc">本網站使用 Cookie 提供您最佳瀏覽體驗，並透過 Google Analytics 了解網站使用狀況以持續改善服務。您可選擇接受所有 Cookie，或僅使用維持網站正常運作的必要 Cookie。詳情請參閱<a href="/privacy.html">隱私權政策</a>。</p>
+                </div>
+                <div class="mj-cookie-actions">
+                    <button type="button" id="mj-cookie-reject" class="mj-btn-ghost">僅必要 Cookie</button>
+                    <button type="button" id="mj-cookie-accept" class="mj-btn-solid">接受所有 Cookie</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+    (function () {
+        'use strict';
+        var STORAGE_KEY = 'mujin_cookie_consent';
+        var STORAGE_VER = 'v1';
+        function gtag() { window.dataLayer = window.dataLayer || []; window.dataLayer.push(arguments); }
+        function applyConsent(granted) {
+            var state = granted ? 'granted' : 'denied';
+            gtag('consent', 'update', {
+                'ad_storage': state, 'ad_user_data': state,
+                'ad_personalization': state, 'analytics_storage': state
+            });
+            try { localStorage.setItem(STORAGE_KEY, JSON.stringify({ ver: STORAGE_VER, granted: granted, ts: Date.now() })); } catch (e) {}
+        }
+        function showBanner() {
+            var el = document.getElementById('mj-cookie'); if (!el) return;
+            requestAnimationFrame(function () { el.classList.add('is-visible'); });
+        }
+        function hideBanner() {
+            var el = document.getElementById('mj-cookie'); if (!el) return;
+            el.classList.remove('is-visible');
+        }
+        function init() {
+            gtag('consent', 'default', {
+                'ad_storage': 'denied', 'ad_user_data': 'denied',
+                'ad_personalization': 'denied', 'analytics_storage': 'denied',
+                'wait_for_update': 500
+            });
+            var saved = null;
+            try { saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null'); } catch (e) {}
+            if (saved && saved.ver === STORAGE_VER && typeof saved.granted === 'boolean') { applyConsent(saved.granted); return; }
+            setTimeout(showBanner, 800);
+            var a = document.getElementById('mj-cookie-accept'); var r = document.getElementById('mj-cookie-reject');
+            a && a.addEventListener('click', function () { applyConsent(true); hideBanner(); });
+            r && r.addEventListener('click', function () { applyConsent(false); hideBanner(); });
+        }
+        if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init();
+    })();
+    </script>
+`;
 
-/** WebSite + SearchAction（指引 Google 用站內搜尋介接）*/
-const websiteSchema = {
-  "@context": "https://schema.org",
-  "@type": "WebSite",
-  "name": "沐錦空間設計 Mujin Studio",
-  "url": SITE_URL,
-  "inLanguage": "zh-TW",
-  "publisher": {
-    "@type": "Organization",
-    "name": "沐錦空間設計 Mujin Studio",
-    "logo": {
-      "@type": "ImageObject",
-      "url": `${SITE_URL}/images/mujin-studio-yilan-interior-design-logo.webp`
-    }
-  }
-};
+// ============== 內嵌諮詢表單（對話式，2026-05-16 改版） ==============
+const CONTACT_FORM = `
+    <div class="mj-form-wrap" id="contact-form">
+        <h3 class="mj-form-title">您好</h3>
+        <p class="mj-form-subtitle">想聊聊您的空間嗎？</p>
+
+        <form id="mujin-lead-form" action="${FORMSPREE_ENDPOINT}" method="POST" class="mj-form text-left">
+            <!-- honeypot 防機器人 -->
+            <input type="text" name="_gotcha" style="display:none" tabindex="-1" autocomplete="off">
+            <input type="hidden" name="_subject" value="沐錦空間設計｜線上諮詢">
+
+            <div class="mj-field">
+                <label for="mj-name" class="mj-label">怎麼稱呼您？<span class="mj-required">*</span></label>
+                <input type="text" id="mj-name" name="name" required class="mj-input" placeholder="您的姓名">
+            </div>
+
+            <div class="mj-field">
+                <label for="mj-phone" class="mj-label">方便聯繫您的電話是？<span class="mj-required">*</span></label>
+                <input type="tel" id="mj-phone" name="phone" required class="mj-input" placeholder="手機或市話">
+            </div>
+
+            <div class="mj-field">
+                <span class="mj-label">您想諮詢哪種服務？</span>
+                <div class="mj-radio-group">
+                    <label class="mj-radio"><input type="radio" name="service" value="室內設計" checked><span class="mj-radio-dot"></span>室內設計</label>
+                    <label class="mj-radio"><input type="radio" name="service" value="老屋翻新"><span class="mj-radio-dot"></span>老屋翻新</label>
+                    <label class="mj-radio"><input type="radio" name="service" value="預售屋客變"><span class="mj-radio-dot"></span>預售屋客變</label>
+                    <label class="mj-radio"><input type="radio" name="service" value="農舍規劃"><span class="mj-radio-dot"></span>農舍規劃</label>
+                    <label class="mj-radio"><input type="radio" name="service" value="商空設計"><span class="mj-radio-dot"></span>商空設計</label>
+                </div>
+            </div>
+
+            <div class="mj-field">
+                <span class="mj-label">方便聯絡的時段？</span>
+                <div class="mj-radio-group mj-radio-group--time">
+                    <label class="mj-radio"><input type="radio" name="contact_time" value="上午 09:00 - 12:00"><span class="mj-radio-dot"></span><span class="mj-radio-text"><span class="mj-radio-period">上午</span><span class="mj-radio-range">09:00 - 12:00</span></span></label>
+                    <label class="mj-radio"><input type="radio" name="contact_time" value="下午 13:00 - 18:00"><span class="mj-radio-dot"></span><span class="mj-radio-text"><span class="mj-radio-period">下午</span><span class="mj-radio-range">13:00 - 18:00</span></span></label>
+                    <label class="mj-radio"><input type="radio" name="contact_time" value="晚上 18:00 之後"><span class="mj-radio-dot"></span><span class="mj-radio-text"><span class="mj-radio-period">晚上</span><span class="mj-radio-range">18:00 之後</span></span></label>
+                    <label class="mj-radio"><input type="radio" name="contact_time" value="隨時皆可" checked><span class="mj-radio-dot"></span><span class="mj-radio-text"><span class="mj-radio-period">隨時皆可</span><span class="mj-radio-range">不限時段</span></span></label>
+                </div>
+            </div>
+
+            <div class="mj-field">
+                <label for="mj-message" class="mj-label">想說點什麼？（選填）</label>
+                <textarea id="mj-message" name="message" rows="2" class="mj-input" placeholder="建案名稱、坪數，或您想討論的任何事…"></textarea>
+            </div>
+
+            <button type="submit" class="mj-submit">送出，讓沐錦盡快聯繫您</button>
+            <p class="mj-form-note">送出即表示您同意我們依<a href="/privacy.html">隱私權政策</a>處理您的資料。</p>
+        </form>
+    </div>
+`;
+
+// ============== Schema 工廠 ==============
 
 /** BreadcrumbList builder */
 const breadcrumb = (items) => ({
@@ -183,26 +840,46 @@ const breadcrumb = (items) => ({
   }))
 });
 
-/** Speakable for FAQ page */
+const websiteSchema = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "沐錦空間設計 Mujin Studio",
+  "url": SITE_URL,
+  "inLanguage": "zh-TW",
+  "publisher": {
+    "@type": "Organization",
+    "name": "沐錦空間設計 Mujin Studio",
+    "logo": { "@type": "ImageObject", "url": `${SITE_URL}/images/mujin-studio-yilan-interior-design-logo.webp` }
+  }
+};
+
 const faqSpeakable = {
   "@context": "https://schema.org",
   "@type": "WebPage",
-  "speakable": {
-    "@type": "SpeakableSpecification",
-    "cssSelector": [".faq-question", ".faq-answer"]
-  }
+  "speakable": { "@type": "SpeakableSpecification", "cssSelector": [".faq-question", ".faq-answer"] }
 };
 
 module.exports = {
   SITE_URL,
+  PHONE_DISPLAY,
+  PHONE_HREF,
+  EMAIL,
+  FORMSPREE_ENDPOINT,
   SHARED_HEAD_BASIC,
   SUPPLEMENTAL_CSS,
+  MUJIN_COMPONENT_CSS,
+  ANIM_BOOTSTRAP,
   GTM_HEAD,
   GTM_NOSCRIPT,
   FLOATING_ICONS,
+  floatingIcons,
   header,
   FOOTER,
+  footer,
   COMMON_SCRIPTS,
+  COOKIE_CONSENT,
+  CONTACT_FORM,
+  ctaSection,
   websiteSchema,
   breadcrumb,
   faqSpeakable,

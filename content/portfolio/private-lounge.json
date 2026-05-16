@@ -1,18 +1,19 @@
 {
   "slug": "private-lounge",
-  "title": "私人招待所",
+  "title": "私人招待所（設計提案）",
   "category": "Commercial",
   "location": "宜蘭",
   "year": "2025",
   "area": "60 坪",
   "type": "商業空間設計",
+  "concept": true,
   "cover": "/images/yilan-luxury-commercial-space-design.webp",
-  "coverAlt": "宜蘭私人招待所商業空間設計",
-  "summary": "為重要賓客打造的私人招待場域，沉穩、低調、具儀式感。",
+  "coverAlt": "宜蘭私人招待所商業空間設計提案-沉穩深色風格參考",
+  "summary": "為重要賓客打造的私人招待場域，沉穩、低調、具儀式感（設計提案研究）。",
   "gallery": [
-    { "src": "/images/yilan-luxury-commercial-space-design.webp", "alt": "宜蘭私人招待所主空間" }
+    { "src": "/images/yilan-luxury-commercial-space-design.webp", "alt": "宜蘭私人招待所風格提案" }
   ],
-  "body": "業主希望這是一處能招待重要朋友、也能獨處休息的場所。我們以深色系為基底，搭配大量訂製收納，讓空間既具招待的氣勢，又能在日常中保有私人儀式感。每一處材質收邊都反覆推敲，確保近距離看也禁得起檢視。",
+  "body": "本提案以宜蘭的私人招待空間為情境，模擬業主希望兼顧「招待重要朋友」與「獨處休息」的雙重需求。我們以深色系為基底，搭配大量訂製收納，發想出既具招待氣勢、又能在日常中保有儀式感的場域，每一處材質收邊都在設計階段反覆推敲，確保近距離看也禁得起檢視。\n\n沐錦觀點：商空中的「私」是最難拿捏的尺度。本提案是團隊對於「公開的私密性」的一次練習。",
   "order": 70,
   "published": true
 }
